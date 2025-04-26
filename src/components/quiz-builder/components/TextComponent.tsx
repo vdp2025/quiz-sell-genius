@@ -1,67 +1,65 @@
 
 import React from 'react';
-import { QuizComponentStyle } from '@/types/quizBuilder';
 import { cn } from '@/lib/utils';
 
-export interface TextComponentProps {
+interface TextComponentProps {
   data: {
     title?: string;
-    subtitle?: string;
     text?: string;
   };
-  style?: QuizComponentStyle;
-  isSelected?: boolean;
+  style?: {
+    textColor?: string;
+  };
   isHeadline?: boolean;
+  isEditing?: boolean;
+  isSelected?: boolean;
 }
 
 const TextComponent: React.FC<TextComponentProps> = ({
   data,
   style,
-  isSelected,
-  isHeadline = false
+  isHeadline = false,
+  isEditing = false,
+  isSelected = false
 }) => {
-  const { title, subtitle, text } = data;
-  
   if (isHeadline) {
     return (
-      <div 
-        className={cn(
-          "p-4", 
-          isSelected && "outline outline-2 outline-offset-2 outline-[#B89B7A]"
-        )}
-        style={{
-          backgroundColor: style?.backgroundColor || 'transparent',
-          color: style?.textColor || 'inherit',
-          borderRadius: style?.borderRadius ? `${style.borderRadius}px` : undefined,
-          padding: `${style?.paddingY || '16px'} ${style?.paddingX || '16px'}`
-        }}
-      >
-        {title && (
-          <h2 className="text-2xl font-semibold mb-2">{title}</h2>
-        )}
-        {subtitle && (
-          <p className="text-gray-600">{subtitle}</p>
+      <div className="text-center">
+        <h2 
+          className={cn(
+            "text-2xl md:text-3xl font-bold mb-3",
+            isEditing && !data.title && "opacity-50"
+          )}
+          style={{ color: style?.textColor || 'inherit' }}
+        >
+          {data.title || 'Título da Seção'}
+        </h2>
+        {data.text && (
+          <p 
+            className="text-lg opacity-80"
+            style={{ color: style?.textColor || 'inherit' }}
+          >
+            {data.text}
+          </p>
         )}
       </div>
     );
   }
-  
+
   return (
-    <div 
-      className={cn(
-        "p-4", 
-        isSelected && "outline outline-2 outline-offset-2 outline-[#B89B7A]"
-      )}
-      style={{
-        backgroundColor: style?.backgroundColor || 'transparent',
-        color: style?.textColor || 'inherit',
-        borderRadius: style?.borderRadius ? `${style.borderRadius}px` : undefined,
-        padding: `${style?.paddingY || '16px'} ${style?.paddingX || '16px'}`
-      }}
-    >
-      {text && (
-        <p className="text-base">{text}</p>
-      )}
+    <div className="prose max-w-none">
+      <div
+        className={cn(
+          isEditing && !data.text && "opacity-50"
+        )}
+        style={{ color: style?.textColor || 'inherit' }}
+      >
+        {data.text ? (
+          <p>{data.text}</p>
+        ) : (
+          <p>Digite seu texto aqui...</p>
+        )}
+      </div>
     </div>
   );
 };

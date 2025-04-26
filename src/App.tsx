@@ -1,58 +1,72 @@
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Suspense, lazy } from 'react'; // Removido ErrorBoundary
-import { AuthProvider } from './context/AuthContext';
+import { Suspense, lazy } from 'react';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './lib/react-query';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { Toaster } from './components/ui/toaster';
 import { LoadingState } from './components/ui/loading-state';
 import { QuizProvider } from './context/QuizContext';
-// Importar Index em vez de QuizPage diretamente
-import Index from './pages/Index';
-// Import ResultPage normalmente to avoid lazy loading issues
-import ResultPage from './pages/ResultPage';
-// Only lazy load components that aren't on the main route
-const EditorPage = lazy(() => import('./pages/EditorPage'));
-const QuizBuilderPage = lazy(() => import('./pages/QuizBuilderPage'));
-const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
-const QuizEditorPage = lazy(() => import('./pages/admin/QuizEditorPage'));
+import QuizIntro from './components/QuizIntro';
 
-// Simple error boundary component
-const ErrorFallback = () => (
-  <div className="min-h-screen flex items-center justify-center bg-white">
-    <div className="text-center p-6">
-      <h1 className="text-2xl font-semibold text-red-600 mb-4">
-        Algo deu errado
-      </h1>
-      <p className="text-gray-600 mb-6">
-        Houve um erro ao carregar esta página. Por favor, tente novamente.
-      </p>
-      <a href="/" className="inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition-colors">
-        Voltar para o início
-      </a>
-    </div>
-  </div>
-);
+// Importações lazy para melhor performance
+const AdminPage = lazy(() => import('./pages/Admin'));
+const SettingsPage = lazy(() => import('./pages/admin/SettingsPage'));
+const ResultPageEditorPage = lazy(() => import('./pages/admin/ResultPageEditorPage'));
+const UTMAnalyticsPage = lazy(() => import('./pages/admin/UTMAnalyticsPage'));
+const EditorPage = lazy(() => import('./pages/admin/EditorPage'));
+
+const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, isAdmin } = useAuth();
+  if (!user || !isAdmin) {
+    return <QuizIntro onStart={() => {}} />;
+  }
+  return <>{children}</>;
+};
 
 function App() {
   return (
-    <AuthProvider>
-      <QuizProvider>
-        <Router>
-          <Suspense fallback={<LoadingState />}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/resultado" element={<ResultPage />} />
-              <Route path="/editor" element={<EditorPage />} />
-              <Route path="/editor/:style" element={<EditorPage />} />
-              <Route path="/builder" element={<QuizBuilderPage />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/quiz-editor" element={<QuizEditorPage />} />
-              <Route path="/admin/quiz-editor/:templateId" element={<QuizEditorPage />} />
-            </Routes>
-          </Suspense>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <QuizProvider>
+          <Router>
+            <Suspense fallback={<LoadingState />}>
+              <Routes>
+                <Route path="/" element={<QuizIntro onStart={() => {}} />} />
+                
+                {/* Rotas de Administração */}
+                <Route path="/admin" element={
+                  <ProtectedAdminRoute>
+                    <AdminPage />
+                  </ProtectedAdminRoute>
+                } />
+                <Route path="/admin/settings" element={
+                  <ProtectedAdminRoute>
+                    <SettingsPage />
+                  </ProtectedAdminRoute>
+                } />
+                <Route path="/admin/resultado-editor" element={
+                  <ProtectedAdminRoute>
+                    <ResultPageEditorPage />
+                  </ProtectedAdminRoute>
+                } />
+                <Route path="/admin/utm-analytics" element={
+                  <ProtectedAdminRoute>
+                    <UTMAnalyticsPage />
+                  </ProtectedAdminRoute>
+                } />
+                <Route path="/admin/quiz-builder" element={
+                  <ProtectedAdminRoute>
+                    <EditorPage />
+                  </ProtectedAdminRoute>
+                } />
+              </Routes>
+            </Suspense>
+          </Router>
           <Toaster />
-        </Router>
-      </QuizProvider>
-    </AuthProvider>
+        </QuizProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 

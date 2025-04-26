@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useQuizLogic } from '../hooks/useQuizLogic';
+import { useQuiz } from '../context/QuizContext';
 import { UserResponse } from '@/types/quiz';
 import { toast } from './ui/use-toast';
 import { QuizContainer } from './quiz/QuizContainer';
@@ -11,12 +12,14 @@ import { strategicQuestions } from '@/data/strategicQuestions';
 
 const QuizPage: React.FC = () => {
   const { user } = useAuth();
-  const [showingStrategicQuestions, setShowingStrategicQuestions] = React.useState(false);
-  const [showingTransition, setShowingTransition] = React.useState(false);
-  const [showingFinalTransition, setShowingFinalTransition] = React.useState(false);
-  const [currentStrategicQuestionIndex, setCurrentStrategicQuestionIndex] = React.useState(0);
-  const [strategicAnswers, setStrategicAnswers] = React.useState<Record<string, string[]>>({});
+  // State declarations
+  const [showingStrategicQuestions, setShowingStrategicQuestions] = useState(false);
+  const [showingTransition, setShowingTransition] = useState(false);
+  const [showingFinalTransition, setShowingFinalTransition] = useState(false);
+  const [currentStrategicQuestionIndex, setCurrentStrategicQuestionIndex] = useState(0);
+  const [strategicAnswers, setStrategicAnswers] = useState<Record<string, string[]>>({});
 
+  // Get quiz logic functions
   const {
     currentQuestion,
     currentQuestionIndex,
@@ -28,16 +31,11 @@ const QuizPage: React.FC = () => {
     totalQuestions,
     calculateResults,
     handleStrategicAnswer: saveStrategicAnswer,
-    submitQuizIfComplete
-  } = useQuizLogic();
+    submitQuizIfComplete,
+    canProceed
+  } = useQuiz();
 
-  useEffect(() => {
-    if (user?.userName) {
-      localStorage.setItem('userName', user.userName);
-      console.log('User name saved:', user.userName);
-    }
-  }, [user]);
-
+  // Handle strategic answer
   const handleStrategicAnswer = (response: UserResponse) => {
     try {
       console.log('Strategic Answer Received:', response);
@@ -67,6 +65,7 @@ const QuizPage: React.FC = () => {
     }
   };
 
+  // Handle answer submission
   const handleAnswerSubmit = (response: UserResponse) => {
     try {
       handleAnswer(response.questionId, response.selectedOptions);
@@ -94,6 +93,7 @@ const QuizPage: React.FC = () => {
     }
   };
 
+  // Handle showing result
   const handleShowResult = () => {
     try {
       const results = submitQuizIfComplete();
@@ -115,7 +115,12 @@ const QuizPage: React.FC = () => {
     }
   };
 
+  // Handle next click
   const handleNextClick = () => {
+    if (!canProceed) {
+      toast({ title: "Selecione as opções antes de continuar", variant: "destructive" });
+      return;
+    }
     if (!isLastQuestion) {
       handleNext();
     } else {
@@ -123,6 +128,14 @@ const QuizPage: React.FC = () => {
       setShowingTransition(true);
     }
   };
+
+  // Save user name to localStorage
+  useEffect(() => {
+    if (user?.userName) {
+      localStorage.setItem('userName', user.userName);
+      console.log('User name saved:', user.userName);
+    }
+  }, [user]);
 
   return (
     <QuizContainer>

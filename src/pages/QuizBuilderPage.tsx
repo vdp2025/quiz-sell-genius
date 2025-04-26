@@ -1,9 +1,9 @@
+import QuizAdminPanel from '../../components/admin/QuizAdminPanel';
 
-import React from 'react';
-import { QuizBuilder } from '@/components/quiz-builder/QuizBuilder';
-
-const QuizBuilderPage: React.FC = () => {
-  return <QuizBuilder />;
-};
-
-export default QuizBuilderPage;
+export default function QuizBuilderPage() {
+  return (
+    <div>
+      <QuizAdminPanel />
+    </div>
+  );
+}

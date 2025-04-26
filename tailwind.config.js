@@ -1,0 +1,84 @@
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  darkMode: ["class"],
+  content: [
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+  ],
+  theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
+    extend: {
+      colors: {
+        border: "rgb(var(--color-brand-light) / 0.2)",
+        input: "rgb(var(--color-brand-light) / 0.2)",
+        ring: "rgb(var(--color-brand) / 0.5)",
+        background: "rgb(var(--color-background))",
+        foreground: "rgb(var(--color-text))",
+        'brand-gold': "rgb(var(--color-brand))",
+        'brand-text': "rgb(var(--color-text))",
+        'brand-text-dark': "rgb(var(--color-text-dark))",
+        primary: {
+          DEFAULT: "rgb(var(--color-brand))",
+          foreground: "white",
+        },
+        secondary: {
+          DEFAULT: "rgb(var(--color-brand-light))",
+          foreground: "rgb(var(--color-brand))",
+        },
+        destructive: {
+          DEFAULT: "hsl(0 84.2% 60.2%)",
+          foreground: "hsl(0 0% 98%)",
+        },
+        muted: {
+          DEFAULT: "rgb(var(--color-brand-light) / 0.2)",
+          foreground: "rgb(var(--color-brand-dark))",
+        },
+        accent: {
+          DEFAULT: "rgb(var(--color-brand-light) / 0.5)",
+          foreground: "rgb(var(--color-brand-dark))",
+        },
+        popover: {
+          DEFAULT: "hsl(0 0% 100%)",
+          foreground: "rgb(var(--color-text))",
+        },
+        card: {
+          DEFAULT: "hsl(0 0% 100%)",
+          foreground: "rgb(var(--color-text))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      fontFamily: {
+        sans: ["var(--font-primary)"],
+        playfair: ["var(--font-display)"],
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: 0 },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: 0 },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+      },
+    },
+  },
+  plugins: [require("tailwindcss-animate")],
+}

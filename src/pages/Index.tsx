@@ -1,27 +1,29 @@
+import React, { useEffect, useState } from "react";
 
-import { useState } from 'react';
-import QuizIntro from '../components/QuizIntro';
-import QuizPage from '../components/QuizPage';
-import { useQuizContext } from '../context/QuizContext';
+export default function Index() {
+  const [quizData, setQuizData] = useState(null);
 
-const Index = () => {
-  const [started, setStarted] = useState(false);
-  const { quizCompleted } = useQuizContext();
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("quizData") || "null");
+    if (saved) setQuizData(saved);
+  }, []);
 
-  const handleStart = () => {
-    setStarted(true);
-    console.log('Quiz started');
-  };
+  if (!quizData) return <div>Carregando quiz...</div>;
 
   return (
-    <div className="min-h-screen bg-background">
-      {!started ? (
-        <QuizIntro onStart={handleStart} />
-      ) : (
-        <QuizPage />
-      )}
+    <div>
+      <h1>{quizData.intro.titulo}</h1>
+      <p>{quizData.intro.descricao}</p>
+      {quizData.perguntas.map((pergunta, idx) => (
+        <div key={pergunta.id} style={{ marginBottom: 24 }}>
+          <h3>{pergunta.texto}</h3>
+          <ul>
+            {pergunta.opcoes.map((opcao, oIdx) => (
+              <li key={oIdx}>{opcao}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
-};
-
-export default Index;
+}

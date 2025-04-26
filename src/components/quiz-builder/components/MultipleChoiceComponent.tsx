@@ -1,106 +1,120 @@
 
 import React from 'react';
-import { QuizComponentData } from '@/types/quizBuilder';
 import { cn } from '@/lib/utils';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Check, HelpCircle } from 'lucide-react';
 
 interface MultipleChoiceComponentProps {
-  data: QuizComponentData['data'];
-  style: QuizComponentData['style'];
-  isSelected: boolean;
+  data: {
+    question?: string;
+    options?: string[];
+    multiSelect?: number;
+    imageSize?: 'small' | 'medium' | 'large';
+    optionImages?: string[];
+    displayType?: 'text' | 'image' | 'both';
+    layout?: {
+      columns: 1 | 2 | 3 | 4;
+      direction: 'vertical' | 'horizontal';
+    };
+  };
+  style?: {
+    textColor?: string;
+    backgroundColor?: string;
+    selectionIndicator?: 'border' | 'checkbox' | 'highlight';
+  };
+  isEditing?: boolean;
+  isSelected?: boolean;
 }
 
-const MultipleChoiceComponent: React.FC<MultipleChoiceComponentProps> = ({ 
-  data, 
-  style, 
-  isSelected 
+const MultipleChoiceComponent: React.FC<MultipleChoiceComponentProps> = ({
+  data,
+  style,
+  isEditing = false,
+  isSelected = false
 }) => {
-  const getColumnsClass = () => {
-    const columns = data.layout?.columns || 2;
-    switch (columns) {
-      case 1: return "grid-cols-1";
-      case 3: return "grid-cols-1 sm:grid-cols-3";
-      case 4: return "grid-cols-2 sm:grid-cols-4";
-      default: return "grid-cols-1 sm:grid-cols-2"; // Default to 2 columns
-    }
-  };
-
-  const getImageSize = () => {
-    switch (data.imageSize || 'medium') {
-      case 'small': return { ratio: 16 / 9, classes: "max-h-24" };
-      case 'large': return { ratio: 4 / 3, classes: "max-h-64" };
-      default: return { ratio: 4 / 3, classes: "max-h-48" }; // Medium is default
-    }
-  };
-
-  const imageConfig = getImageSize();
+  const options = data.options || [];
+  const imageUrls = data.optionImages || [];
   const displayType = data.displayType || 'text';
-  const showImages = displayType === 'image' || displayType === 'both';
-  const showText = displayType === 'text' || displayType === 'both';
+  const columns = data.layout?.columns || 2;
+  const selectionIndicator = style?.selectionIndicator || 'border';
 
   return (
-    <div 
-      className={cn(
-        "w-full",
-        isSelected && "ring-2 ring-inset ring-[#B89B7A]/20"
-      )}
-      style={{
-        backgroundColor: style?.backgroundColor || 'transparent',
-        color: style?.textColor || 'inherit',
-        borderRadius: `${style?.borderRadius || 0}px`,
-        padding: `${style?.paddingY || 16}px ${style?.paddingX || 16}px`,
-      }}
-    >
-      <h3 className="text-lg md:text-xl font-medium mb-4 text-[#432818] text-center">
-        {data.question || 'Sua pergunta aqui?'}
+    <div className="w-full">
+      <h3 
+        className={cn(
+          "text-xl font-medium mb-4",
+          isEditing && !data.question && "opacity-50"
+        )}
+        style={{ color: style?.textColor || 'inherit' }}
+      >
+        {data.question || 'Pergunta do Quiz'}
       </h3>
       
-      <p className="text-center text-sm text-[#6b605a] mb-6">
-        {data.maxSelections > 1 
-          ? `Selecione ${data.maxSelections} opções`
-          : 'Selecione uma opção'}
-      </p>
-      
-      <div className={cn(
-        "grid gap-3",
-        getColumnsClass()
-      )}>
-        {(data.options || ['Opção 1', 'Opção 2', 'Opção 3']).map((option, index) => (
-          <div 
-            key={index}
-            className={cn(
-              "border border-gray-200 rounded-md hover:border-[#B89B7A]/50 hover:bg-[#FAF9F7] cursor-pointer transition-colors",
-              showImages ? "overflow-hidden flex flex-col" : "p-3"
-            )}
-          >
-            {showImages && (
-              <div className="w-full">
-                <AspectRatio ratio={imageConfig.ratio} className={imageConfig.classes}>
-                  <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                </AspectRatio>
-              </div>
-            )}
-            
-            {showText && (
-              <div className={cn("flex-1", showImages && "p-2")}>
-                {option}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-      
-      {!data.autoAdvance && data.maxSelections > 0 && (
-        <div className="flex justify-center mt-4">
-          <button className="bg-[#B89B7A]/80 hover:bg-[#B89B7A] text-white px-4 py-2 rounded-md text-sm opacity-50 cursor-not-allowed">
-            Continuar
-          </button>
-        </div>
+      {data.multiSelect && data.multiSelect > 0 && (
+        <p className="text-sm text-gray-500 mb-4">
+          Selecione {data.multiSelect} opções
+        </p>
       )}
+      
+      <div 
+        className={cn(
+          "grid gap-4",
+          columns === 1 && "grid-cols-1",
+          columns === 2 && "grid-cols-1 sm:grid-cols-2",
+          columns === 3 && "grid-cols-1 sm:grid-cols-2 md:grid-cols-3",
+          columns === 4 && "grid-cols-1 sm:grid-cols-2 md:grid-cols-4"
+        )}
+      >
+        {options.length > 0 ? (
+          options.map((option, index) => (
+            <div 
+              key={index}
+              className={cn(
+                "border rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors",
+                selectionIndicator === 'border' && "hover:border-[#9b87f5]",
+                selectionIndicator === 'highlight' && "hover:bg-[#9b87f5]/10"
+              )}
+            >
+              <div className="flex items-start gap-3">
+                {selectionIndicator === 'checkbox' && (
+                  <div className="w-5 h-5 border border-gray-300 rounded flex-shrink-0 mt-1" />
+                )}
+                
+                <div className="flex-1">
+                  {(displayType === 'image' || displayType === 'both') && (
+                    <div className={cn(
+                      "mb-3 rounded overflow-hidden bg-gray-100",
+                      data.imageSize === 'small' && "h-24",
+                      data.imageSize === 'medium' && "h-40",
+                      data.imageSize === 'large' && "h-56",
+                      !data.imageSize && "h-40"
+                    )}>
+                      {imageUrls[index] ? (
+                        <img 
+                          src={imageUrls[index]} 
+                          alt={option} 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <HelpCircle className="text-gray-300" size={24} />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {(displayType === 'text' || displayType === 'both') && (
+                    <span>{option}</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="col-span-full text-center py-6 text-gray-400 border border-dashed rounded-lg">
+            Nenhuma opção configurada
+          </div>
+        )}
+      </div>
     </div>
   );
 };

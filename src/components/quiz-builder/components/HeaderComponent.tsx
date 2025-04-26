@@ -1,42 +1,62 @@
 
 import React from 'react';
-import { QuizComponentData } from '@/types/quizBuilder';
 import { cn } from '@/lib/utils';
 
 interface HeaderComponentProps {
-  data: QuizComponentData['data'];
-  style: QuizComponentData['style'];
-  isSelected: boolean;
+  data: {
+    title?: string;
+    subtitle?: string;
+    buttonText?: string;
+  };
+  style?: {
+    textColor?: string;
+    backgroundColor?: string;
+  };
+  isEditing?: boolean;
+  isSelected?: boolean;
 }
 
-const HeaderComponent: React.FC<HeaderComponentProps> = ({ 
-  data, 
-  style, 
-  isSelected 
+const HeaderComponent: React.FC<HeaderComponentProps> = ({
+  data,
+  style,
+  isEditing = false,
+  isSelected = false
 }) => {
   return (
-    <div 
-      className={cn(
-        "w-full text-center",
-        isSelected && "ring-2 ring-inset ring-[#B89B7A]/20"
-      )}
-      style={{
-        backgroundColor: style?.backgroundColor || 'transparent',
-        color: style?.textColor || 'inherit',
-        borderRadius: `${style?.borderRadius || 0}px`,
-        padding: `${style?.paddingY || 16}px ${style?.paddingX || 16}px`,
-      }}
-    >
-      <h1 className="text-2xl md:text-3xl font-playfair text-[#432818] mb-2">
+    <header className="text-center py-8">
+      <h1 
+        className={cn(
+          "text-3xl md:text-4xl font-bold mb-4",
+          isEditing && !data.title && "opacity-50"
+        )}
+        style={{ color: style?.textColor || 'inherit' }}
+      >
         {data.title || 'Título do Quiz'}
       </h1>
       
-      {data.subtitle && (
-        <p className="text-[#8F7A6A] text-base">
-          {data.subtitle}
+      {(data.subtitle || isEditing) && (
+        <p 
+          className={cn(
+            "text-lg md:text-xl mb-6",
+            isEditing && !data.subtitle && "opacity-50"
+          )}
+          style={{ color: style?.textColor || 'inherit' }}
+        >
+          {data.subtitle || 'Subtítulo ou descrição do quiz'}
         </p>
       )}
-    </div>
+      
+      {(data.buttonText || isEditing) && (
+        <button 
+          className={cn(
+            "bg-[#9b87f5] hover:bg-[#7E69AB] text-white px-6 py-2 rounded-md font-medium",
+            isEditing && "pointer-events-none"
+          )}
+        >
+          {data.buttonText || 'Iniciar Quiz'}
+        </button>
+      )}
+    </header>
   );
 };
 
