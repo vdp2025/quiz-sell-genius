@@ -39,6 +39,7 @@ export const StrategicQuestions: React.FC<StrategicQuestionsProps> = ({
         autoAdvance={true}
         onNextClick={onNextClick}
         showQuestionImage={true}
+        isStrategic={true}
       />
     </AnimatedWrapper>
   );

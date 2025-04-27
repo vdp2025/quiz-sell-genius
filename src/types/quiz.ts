@@ -10,6 +10,7 @@ export interface QuizOption {
 export interface QuizQuestion {
   id: string;
   title: string;
+  text: string; // Added this missing property
   type: 'text' | 'image' | 'both';
   multiSelect: number;
   imageUrl?: string;

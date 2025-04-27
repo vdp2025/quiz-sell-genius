@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { AnimatedWrapper } from './ui/animated-wrapper';
 import { cn } from '@/lib/utils';
@@ -18,6 +19,7 @@ interface QuizQuestionProps {
   onNextClick?: () => void;
   onPreviousClick?: () => void;
   showQuestionImage?: boolean;
+  isStrategic?: boolean; // Added the missing prop
 }
 
 const QuizQuestion: React.FC<QuizQuestionProps> = ({
@@ -28,10 +30,11 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
   hideTitle = false,
   onNextClick,
   onPreviousClick,
-  showQuestionImage = false
+  showQuestionImage = false,
+  isStrategic = false // Added with default value
 }) => {
   const isMobile = useIsMobile();
-  const isStrategicQuestion = question.id.startsWith('strategic');
+  const isStrategicQuestion = isStrategic || question.id.startsWith('strategic');
   const hasImageOptions = question.type !== 'text';
   const [imageError, setImageError] = useState(false);
   const { scrollToQuestion } = useQuestionScroll();

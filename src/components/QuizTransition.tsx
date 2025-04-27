@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card } from './ui/card';
 import { AnimatedWrapper } from './ui/animated-wrapper';
@@ -100,7 +101,7 @@ const QuizTransition: React.FC<QuizTransitionProps> = ({
             onAnswer={handleOptionSelect}
             currentAnswers={selectedOptions}
             autoAdvance={false}
-            isStrategic={true}
+            isStrategic={true} // Pass the prop correctly
           />
           
           <Button

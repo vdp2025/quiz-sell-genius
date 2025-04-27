@@ -1,16 +1,14 @@
+
 import React, { useState, useEffect } from "react";
-import QuizIntro from '../../components/QuizIntro';
-import QuizPage from '../../components/QuizPage';
-import QuizResult from '../../components/QuizResult';
 
 export default function QuizEditorPage() {
   const [tab, setTab] = useState('intro'); // intro | questions | result
   const [quizData, setQuizData] = useState({
-    intro: { titulo: "", descricao: "" },
-    perguntas: [
-      { id: "1", texto: "Pergunta exemplo", opcoes: ["Opção 1", "Opção 2"] }
+    intro: { title: "", description: "" },
+    questions: [
+      { id: "1", text: "Pergunta exemplo", options: ["Opção 1", "Opção 2"] }
     ],
-    resultado: { titulo: "", descricao: "", imagem: "", oferta: "" }
+    result: { title: "", description: "", imageUrl: "", offer: "" }
   });
 
   // Carregar dados salvos
@@ -29,42 +27,80 @@ export default function QuizEditorPage() {
   function handleIntroChange(field, value) {
     setQuizData({ ...quizData, intro: { ...quizData.intro, [field]: value } });
   }
-  function handlePerguntaChange(idx, field, value) {
-    const perguntas = [...quizData.perguntas];
-    perguntas[idx][field] = value;
-    setQuizData({ ...quizData, perguntas });
+  
+  function handleQuestionChange(idx, field, value) {
+    const questions = [...quizData.questions];
+    questions[idx][field] = value;
+    setQuizData({ ...quizData, questions });
   }
+  
   function handleOptionChange(qIdx, oIdx, value) {
-    const perguntas = [...quizData.perguntas];
-    perguntas[qIdx].opcoes[oIdx] = value;
-    setQuizData({ ...quizData, perguntas });
+    const questions = [...quizData.questions];
+    questions[qIdx].options[oIdx] = value;
+    setQuizData({ ...quizData, questions });
   }
-  function handleAddPergunta() {
+  
+  function handleAddQuestion() {
     setQuizData({
       ...quizData,
-      perguntas: [
-        ...quizData.perguntas,
-        { id: Date.now().toString(), texto: "", opcoes: [""] }
+      questions: [
+        ...quizData.questions,
+        { id: Date.now().toString(), text: "", options: [""] }
       ]
     });
   }
-  function handleRemovePergunta(idx) {
-    const perguntas = quizData.perguntas.filter((_, i) => i !== idx);
-    setQuizData({ ...quizData, perguntas });
+  
+  function handleRemoveQuestion(idx) {
+    const questions = quizData.questions.filter((_, i) => i !== idx);
+    setQuizData({ ...quizData, questions });
   }
+  
   function handleAddOption(qIdx) {
-    const perguntas = [...quizData.perguntas];
-    perguntas[qIdx].opcoes.push("");
-    setQuizData({ ...quizData, perguntas });
+    const questions = [...quizData.questions];
+    questions[qIdx].options.push("");
+    setQuizData({ ...quizData, questions });
   }
+  
   function handleRemoveOption(qIdx, oIdx) {
-    const perguntas = [...quizData.perguntas];
-    perguntas[qIdx].opcoes.splice(oIdx, 1);
-    setQuizData({ ...quizData, perguntas });
+    const questions = [...quizData.questions];
+    questions[qIdx].options.splice(oIdx, 1);
+    setQuizData({ ...quizData, questions });
   }
+  
   function handleResultChange(field, value) {
-    setQuizData({ ...quizData, resultado: { ...quizData.resultado, [field]: value } });
+    setQuizData({ ...quizData, result: { ...quizData.result, [field]: value } });
   }
+
+  // Temporary mockup components for this page
+  // These would be replaced with your actual components once available
+  const QuizIntro = ({ onStart, title, description }) => (
+    <div style={{ border: '1px solid #ccc', padding: '20px', marginTop: '10px' }}>
+      <h3>{title || "Título do Quiz"}</h3>
+      <p>{description || "Descrição do quiz aqui"}</p>
+      <button onClick={onStart}>Iniciar Quiz</button>
+    </div>
+  );
+
+  const QuizPage = ({ quiz, modoPreview }) => (
+    <div style={{ border: '1px solid #ccc', padding: '20px', marginTop: '10px' }}>
+      <p>Preview do Quiz {modoPreview ? "(Modo Preview)" : ""}</p>
+      <h4>Perguntas:</h4>
+      <ul>
+        {quiz?.questions?.map((q, i) => (
+          <li key={q.id || i}>{q.text || "Pergunta sem texto"}</li>
+        ))}
+      </ul>
+    </div>
+  );
+
+  const QuizResult = ({ title, description, imageUrl, offer }) => (
+    <div style={{ border: '1px solid #ccc', padding: '20px', marginTop: '10px' }}>
+      <h3>{title || "Título do Resultado"}</h3>
+      <p>{description || "Descrição do resultado aqui"}</p>
+      {imageUrl && <img src={imageUrl} alt="Resultado" style={{ maxWidth: '200px' }} />}
+      <p><strong>Oferta:</strong> {offer || "Nenhuma oferta definida"}</p>
+    </div>
+  );
 
   return (
     <div>
@@ -79,20 +115,20 @@ export default function QuizEditorPage() {
         <div>
           <h3>Editar Introdução</h3>
           <input
-            value={quizData.intro.titulo}
-            onChange={e => handleIntroChange("titulo", e.target.value)}
+            value={quizData.intro.title}
+            onChange={e => handleIntroChange("title", e.target.value)}
             placeholder="Título da introdução"
           />
           <input
-            value={quizData.intro.descricao}
-            onChange={e => handleIntroChange("descricao", e.target.value)}
+            value={quizData.intro.description}
+            onChange={e => handleIntroChange("description", e.target.value)}
             placeholder="Descrição da introdução"
           />
           <h4>Preview</h4>
           <QuizIntro
             onStart={() => {}}
-            titulo={quizData.intro.titulo}
-            descricao={quizData.intro.descricao}
+            title={quizData.intro.title}
+            description={quizData.intro.description}
           />
         </div>
       )}
@@ -100,33 +136,33 @@ export default function QuizEditorPage() {
       {tab === 'questions' && (
         <div>
           <h3>Editar Perguntas</h3>
-          {quizData.perguntas.map((p, idx) => (
+          {quizData.questions.map((p, idx) => (
             <div key={p.id} style={{ border: "1px solid #ccc", margin: 8, padding: 8 }}>
               <input
-                value={p.texto}
-                onChange={e => handlePerguntaChange(idx, "texto", e.target.value)}
+                value={p.text}
+                onChange={e => handleQuestionChange(idx, "text", e.target.value)}
                 placeholder="Texto da pergunta"
               />
               <div>
                 <b>Opções:</b>
-                {p.opcoes.map((op, oIdx) => (
+                {p.options.map((op, oIdx) => (
                   <div key={oIdx}>
                     <input
                       value={op}
                       onChange={e => handleOptionChange(idx, oIdx, e.target.value)}
                       placeholder={`Opção ${oIdx + 1}`}
                     />
-                    <button onClick={() => handleRemoveOption(idx, oIdx)} disabled={p.opcoes.length <= 1}>Remover</button>
+                    <button onClick={() => handleRemoveOption(idx, oIdx)} disabled={p.options.length <= 1}>Remover</button>
                   </div>
                 ))}
                 <button onClick={() => handleAddOption(idx)}>Adicionar Opção</button>
               </div>
-              <button onClick={() => handleRemovePergunta(idx)}>Remover Pergunta</button>
+              <button onClick={() => handleRemoveQuestion(idx)}>Remover Pergunta</button>
             </div>
           ))}
-          <button onClick={handleAddPergunta}>Adicionar Pergunta</button>
+          <button onClick={handleAddQuestion}>Adicionar Pergunta</button>
           <h4>Preview</h4>
-          <QuizPage quiz={quizData} modoPreview />
+          <QuizPage quiz={quizData} modoPreview={true} />
         </div>
       )}
 
@@ -134,31 +170,31 @@ export default function QuizEditorPage() {
         <div>
           <h3>Editar Resultado</h3>
           <input
-            value={quizData.resultado.titulo}
-            onChange={e => handleResultChange("titulo", e.target.value)}
+            value={quizData.result.title}
+            onChange={e => handleResultChange("title", e.target.value)}
             placeholder="Título do resultado"
           />
           <input
-            value={quizData.resultado.descricao}
-            onChange={e => handleResultChange("descricao", e.target.value)}
+            value={quizData.result.description}
+            onChange={e => handleResultChange("description", e.target.value)}
             placeholder="Descrição do resultado"
           />
           <input
-            value={quizData.resultado.imagem}
-            onChange={e => handleResultChange("imagem", e.target.value)}
+            value={quizData.result.imageUrl}
+            onChange={e => handleResultChange("imageUrl", e.target.value)}
             placeholder="URL da imagem"
           />
           <input
-            value={quizData.resultado.oferta}
-            onChange={e => handleResultChange("oferta", e.target.value)}
+            value={quizData.result.offer}
+            onChange={e => handleResultChange("offer", e.target.value)}
             placeholder="Texto da oferta"
           />
           <h4>Preview</h4>
           <QuizResult
-            titulo={quizData.resultado.titulo}
-            descricao={quizData.resultado.descricao}
-            imagem={quizData.resultado.imagem}
-            oferta={quizData.resultado.oferta}
+            title={quizData.result.title}
+            description={quizData.result.description}
+            imageUrl={quizData.result.imageUrl}
+            offer={quizData.result.offer}
           />
         </div>
       )}
