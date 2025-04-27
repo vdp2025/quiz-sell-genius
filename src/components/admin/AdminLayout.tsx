@@ -1,38 +1,24 @@
+
 import React from 'react';
 import { Navigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Sidebar, SidebarProvider } from '../ui/sidebar';
-import { Home, Settings, ClipboardList, Edit, LogOut, BarChart3 } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
+import { Home, Settings, ClipboardList } from 'lucide-react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
 }
 
 const AdminLayout = ({ children }: AdminLayoutProps) => {
-  const { user, isAdmin, logout } = useAuth();
+  const { user } = useAuth();
   const location = useLocation();
 
-  if (!user || !isAdmin) {
-    toast({
-      title: "Access Denied",
-      description: "You must be logged in as an admin to access this area.",
-      variant: "destructive"
-    });
-    return <Navigate to="/auth" state={{ from: location }} replace />;
-  }
+  // Para aplicações em produção, você deve verificar se o usuário tem permissão de administrador
+  const isAuthenticated = true; 
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: "Failed to log out. Please try again.",
-        variant: "destructive"
-      });
-    }
-  };
+  if (!isAuthenticated) {
+    return <Navigate to="/" state={{ from: location }} replace />;
+  }
 
   return (
     <SidebarProvider>
@@ -68,30 +54,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                 <ClipboardList className="w-4 h-4 mr-3" />
                 Editor do Quiz
               </Link>
-
-              <Link 
-                to="/admin/resultado-editor" 
-                className={`flex items-center px-3 py-2 text-sm rounded-md ${
-                  location.pathname.includes('/admin/resultado-editor') 
-                    ? 'bg-[#FAF9F7] text-[#432818] font-medium' 
-                    : 'text-[#8F7A6A] hover:bg-[#FAF9F7] hover:text-[#432818]'
-                }`}
-              >
-                <Edit className="w-4 h-4 mr-3" />
-                Editor de Resultado
-              </Link>
-
-              <Link 
-                to="/admin/utm-analytics" 
-                className={`flex items-center px-3 py-2 text-sm rounded-md ${
-                  location.pathname.includes('/admin/utm-analytics') 
-                    ? 'bg-[#FAF9F7] text-[#432818] font-medium' 
-                    : 'text-[#8F7A6A] hover:bg-[#FAF9F7] hover:text-[#432818]'
-                }`}
-              >
-                <BarChart3 className="w-4 h-4 mr-3" />
-                UTM Analytics
-              </Link>
               
               <p className="px-3 pt-5 pb-2 text-xs font-medium text-[#B89B7A] uppercase">
                 Configurações
@@ -99,25 +61,22 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               
               <Link 
                 to="/admin/settings" 
-                className={`flex items-center px-3 py-2 text-sm rounded-md ${
-                  location.pathname === '/admin/settings' 
-                    ? 'bg-[#FAF9F7] text-[#432818] font-medium' 
-                    : 'text-[#8F7A6A] hover:bg-[#FAF9F7] hover:text-[#432818]'
-                }`}
+                className="flex items-center px-3 py-2 text-sm text-[#8F7A6A] rounded-md hover:bg-[#FAF9F7] hover:text-[#432818]"
               >
                 <Settings className="w-4 h-4 mr-3" />
                 Configurações
               </Link>
+              
+              <a 
+                href="/" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center px-3 py-2 text-sm text-[#8F7A6A] rounded-md hover:bg-[#FAF9F7] hover:text-[#432818]"
+              >
+                <ClipboardList className="w-4 h-4 mr-3" />
+                Ver Quiz
+              </a>
             </div>
-          </div>
-          <div className="mt-auto p-4">
-            <button
-              onClick={handleLogout}
-              className="flex items-center px-3 py-2 text-sm text-[#8F7A6A] rounded-md hover:bg-[#FAF9F7] hover:text-[#432818] w-full"
-            >
-              <LogOut className="w-4 h-4 mr-3" />
-              Sign Out
-            </button>
           </div>
         </Sidebar>
         <main className="flex-1 overflow-auto bg-[#FAF9F7]">

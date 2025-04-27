@@ -1,46 +1,37 @@
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { User } from '@supabase/supabase-js';
+import { UserSession } from '../types/auth';
 
 type AuthContextType = {
-  user: (User & { userName?: string }) | null;
-  isAdmin: boolean;
-  setUsername: (name: string) => void;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
+  user: UserSession;
+  login: (name: string) => void;
+  logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<(User & { userName?: string }) | null>({ 
-    id: '1',
-    userName: localStorage.getItem('userName') || '',
-    aud: 'authenticated',
-    created_at: new Date().toISOString(),
-    role: 'authenticated',
-    app_metadata: {},
-    user_metadata: {},
+  const [user, setUser] = useState<UserSession>({
+    userName: '',
+    isAuthenticated: false
   });
-  const [isAdmin] = useState(true);
 
-  const login = async () => {
-    // No-op since authentication is disabled
+  const login = (name: string) => {
+    setUser({
+      userName: name,
+      isAuthenticated: true
+    });
   };
 
-  const logout = async () => {
-    // No-op since authentication is disabled
-  };
-
-  const setUsername = (name: string) => {
-    if (user) {
-      localStorage.setItem('userName', name);
-      setUser({...user, userName: name});
-    }
+  const logout = () => {
+    setUser({
+      userName: '',
+      isAuthenticated: false
+    });
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, login, logout, setUsername }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,63 +1,82 @@
 
-import { useState, useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useUtmParams } from './quiz/useUtmParams';
+import { useQuizAnswers } from './quiz/useQuizAnswers';
 import { useQuizNavigation } from './quiz/useQuizNavigation';
-import { useQuizAnswers } from './quiz/useQuizAnswers'; 
 import { useQuizResults } from './quiz/useQuizResults';
-import { QuizQuestion, QuizAnswer, QuizResult, UserResponse } from '@/types/quiz';
-import { quizQuestions } from '@/data/quizQuestions';
 
 export const useQuizLogic = () => {
+  const { utmParams } = useUtmParams();
   const { 
+    answers, 
+    strategicAnswers, 
+    quizResult, 
+    setQuizResult, 
+    handleAnswer, 
+    handleStrategicAnswer 
+  } = useQuizAnswers();
+  const {
     currentQuestion,
     currentQuestionIndex,
     isLastQuestion,
+    quizCompleted,
+    setQuizCompleted,
     totalQuestions,
     handleNext,
     handlePrevious,
     resetQuiz
   } = useQuizNavigation();
-  
-  const {
-    answers,
-    strategicAnswers,
-    quizResult,
-    setQuizResult,
-    handleAnswer: saveAnswer,
-    handleStrategicAnswer
-  } = useQuizAnswers();
-  
   const { calculateResults } = useQuizResults(answers);
-  const { utmSource, utmMedium, utmCampaign } = useUtmParams();
-
-  const handleAnswer = useCallback((questionId: string, selectedOptions: string[]) => {
-    saveAnswer(questionId, selectedOptions);
-  }, [saveAnswer]);
 
   const currentAnswers = answers[currentQuestion?.id] || [];
+  const canProceed = currentAnswers.length === (currentQuestion?.multiSelect || 0);
+
+  const startQuiz = useCallback(async (name: string, quizId: string) => {
+    console.log('Quiz started with UTM params:', utmParams);
+    return {
+      id: '1',
+      name,
+      utmParams
+    };
+  }, [utmParams]);
 
   const submitQuizIfComplete = useCallback(() => {
     const results = calculateResults();
+    setQuizCompleted(true);
     setQuizResult(results);
+    
     localStorage.setItem('quizResult', JSON.stringify(results));
+    localStorage.setItem('strategicAnswers', JSON.stringify(strategicAnswers));
+    console.log('Results saved to localStorage:', results);
+    
     return results;
-  }, [calculateResults, setQuizResult]);
+  }, [calculateResults, strategicAnswers, setQuizCompleted, setQuizResult]);
+
+  useEffect(() => {
+    if (quizResult) {
+      localStorage.setItem('quizResult', JSON.stringify(quizResult));
+      console.log('QuizResult saved to localStorage:', quizResult);
+    }
+  }, [quizResult]);
 
   return {
     currentQuestion,
     currentQuestionIndex,
     currentAnswers,
+    canProceed,
     isLastQuestion,
-    answers,
+    quizCompleted,
+    quizResult,
+    totalQuestions,
+    strategicAnswers,
+    utmParams,
     handleAnswer,
     handleNext,
     handlePrevious,
-    totalQuestions,
+    resetQuiz,
+    submitQuizIfComplete,
     calculateResults,
     handleStrategicAnswer,
-    submitQuizIfComplete,
-    quizResult,
-    resetQuiz,
-    utmParams: { utmSource, utmMedium, utmCampaign }
+    startQuiz
   };
 };

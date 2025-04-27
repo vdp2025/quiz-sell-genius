@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useQuiz } from '../context/QuizContext';
+import { useQuizLogic } from '../hooks/useQuizLogic';
 import { UserResponse } from '@/types/quiz';
 import { toast } from './ui/use-toast';
 import { QuizContainer } from './quiz/QuizContainer';
@@ -31,9 +31,8 @@ const QuizPage: React.FC = () => {
     totalQuestions,
     calculateResults,
     handleStrategicAnswer: saveStrategicAnswer,
-    submitQuizIfComplete,
-    canProceed
-  } = useQuiz();
+    submitQuizIfComplete
+  } = useQuizLogic();
 
   // Handle strategic answer
   const handleStrategicAnswer = (response: UserResponse) => {
@@ -117,10 +116,6 @@ const QuizPage: React.FC = () => {
 
   // Handle next click
   const handleNextClick = () => {
-    if (!canProceed) {
-      toast({ title: "Selecione as opções antes de continuar", variant: "destructive" });
-      return;
-    }
     if (!isLastQuestion) {
       handleNext();
     } else {
