@@ -6,34 +6,34 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface EnhancedImagePropertiesProps {
-  imageUrl: string;
+  imageUrl?: string;
   altText?: string;
   borderRadius?: 'none' | 'small' | 'medium' | 'large';
   maxWidth?: string;
   aspectRatio?: string;
   onUpdate: (updates: any) => void;
-  data?: any; // Adicionado para compatibilidade
+  data?: any; // Added to accept the data prop structure
 }
 
 const EnhancedImageProperties: React.FC<EnhancedImagePropertiesProps> = ({
-  imageUrl,
+  imageUrl = '',
   altText = '',
   borderRadius = 'none',
   maxWidth = '100%',
   aspectRatio = 'auto',
   onUpdate,
-  data, // Adicionado para compatibilidade
+  data, // Added to accept the data prop
 }) => {
-  // Se data for fornecido, usar valores de data em vez dos props individuais
+  // If data is provided, use it instead of individual props
   const effectiveImageUrl = data?.imageUrl || imageUrl;
-  const effectiveAltText = data?.altText || altText;
+  const effectiveAltText = data?.altText || data?.alt || altText;
   const effectiveBorderRadius = data?.borderRadius || borderRadius;
   const effectiveMaxWidth = data?.maxWidth || maxWidth;
   const effectiveAspectRatio = data?.aspectRatio || aspectRatio;
 
   const handleUpdate = (updates: any) => {
     if (data) {
-      // Se data for fornecido, atualizar o objeto data
+      // If data is provided, update the data object
       onUpdate({
         ...data,
         ...updates
@@ -66,7 +66,7 @@ const EnhancedImageProperties: React.FC<EnhancedImagePropertiesProps> = ({
         <Input
           id="altText"
           value={effectiveAltText}
-          onChange={(e) => handleUpdate({ altText: e.target.value })}
+          onChange={(e) => handleUpdate({ altText: e.target.value, alt: e.target.value })}
           placeholder="Descrição da imagem"
         />
       </div>
