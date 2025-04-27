@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+// import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import UTMAnalyticsPage from './pages/admin/UTMAnalyticsPage';
