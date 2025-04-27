@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { QuizEditorState, QUIZ_CATEGORIES, QuizCategory } from '@/types/quizEditor';
@@ -57,6 +58,7 @@ const QuizEditor: React.FC<QuizEditorProps> = ({
     const newQuestion: QuizQuestion = {
       id: generateId(),
       title: 'Nova Pergunta',
+      text: 'Nova Pergunta', // Adicionado a propriedade text
       type: 'text',
       multiSelect: 3,
       options: []

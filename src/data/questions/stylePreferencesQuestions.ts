@@ -1,10 +1,10 @@
-
 import { QuizQuestion } from '../../types/quiz';
 
 export const stylePreferencesQuestions: QuizQuestion[] = [
   {
     id: '5',
     title: 'QUAIS ESTAMPAS VOCÊ MAIS SE IDENTIFICA?',
+    text: 'QUAIS ESTAMPAS VOCÊ MAIS SE IDENTIFICA?',
     type: 'both',
     multiSelect: 3,
     options: [
@@ -69,6 +69,7 @@ export const stylePreferencesQuestions: QuizQuestion[] = [
   {
     id: '10',
     title: 'VOCÊ ESCOLHE CERTOS TECIDOS, PRINCIPALMENTE PORQUE ELES...',
+    text: 'VOCÊ ESCOLHE CERTOS TECIDOS, PRINCIPALMENTE PORQUE ELES...',
     type: 'text',
     multiSelect: 3,
     options: [

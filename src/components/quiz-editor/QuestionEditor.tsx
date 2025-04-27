@@ -53,6 +53,7 @@ const QuestionEditor: React.FC<QuestionEditorProps> = ({
     question || {
       id: generateId(),
       title: '',
+      text: '',
       type: 'text',
       multiSelect: 3,
       options: []
@@ -132,7 +133,7 @@ const QuestionEditor: React.FC<QuestionEditorProps> = ({
               <Textarea
                 id="title"
                 value={editedQuestion.title}
-                onChange={(e) => setEditedQuestion(prev => ({ ...prev, title: e.target.value }))}
+                onChange={(e) => setEditedQuestion(prev => ({ ...prev, title: e.target.value, text: e.target.value }))}
                 placeholder="Digite o título da pergunta"
                 className="min-h-[100px] resize-none"
               />
@@ -200,8 +201,20 @@ const QuestionEditor: React.FC<QuestionEditorProps> = ({
                   key={option.id}
                   option={option}
                   questionType={editedQuestion.type}
-                  onUpdate={handleUpdateOption}
-                  onDelete={() => handleDeleteOption(option.id)}
+                  onUpdate={(updatedOption) => {
+                    setEditedQuestion(prev => ({
+                      ...prev,
+                      options: prev.options.map(opt => 
+                        opt.id === updatedOption.id ? updatedOption : opt
+                      )
+                    }));
+                  }}
+                  onDelete={() => {
+                    setEditedQuestion(prev => ({
+                      ...prev,
+                      options: prev.options.filter(opt => opt.id !== option.id)
+                    }));
+                  }}
                   index={index}
                 />
               ))}

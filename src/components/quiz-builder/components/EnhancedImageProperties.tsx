@@ -12,6 +12,7 @@ interface EnhancedImagePropertiesProps {
   maxWidth?: string;
   aspectRatio?: string;
   onUpdate: (updates: any) => void;
+  data?: any; // Adicionado para compatibilidade
 }
 
 const EnhancedImageProperties: React.FC<EnhancedImagePropertiesProps> = ({
@@ -21,7 +22,28 @@ const EnhancedImageProperties: React.FC<EnhancedImagePropertiesProps> = ({
   maxWidth = '100%',
   aspectRatio = 'auto',
   onUpdate,
+  data, // Adicionado para compatibilidade
 }) => {
+  // Se data for fornecido, usar valores de data em vez dos props individuais
+  const effectiveImageUrl = data?.imageUrl || imageUrl;
+  const effectiveAltText = data?.altText || altText;
+  const effectiveBorderRadius = data?.borderRadius || borderRadius;
+  const effectiveMaxWidth = data?.maxWidth || maxWidth;
+  const effectiveAspectRatio = data?.aspectRatio || aspectRatio;
+
+  const handleUpdate = (updates: any) => {
+    if (data) {
+      // Se data for fornecido, atualizar o objeto data
+      onUpdate({
+        ...data,
+        ...updates
+      });
+    } else {
+      // Caso contrário, atualizar como antes
+      onUpdate(updates);
+    }
+  };
+
   const handleImageUpload = () => {
     // In a real implementation, this would open a file picker
     console.log('Image upload functionality would be implemented here');
@@ -33,8 +55,8 @@ const EnhancedImageProperties: React.FC<EnhancedImagePropertiesProps> = ({
         <Label htmlFor="imageUrl">URL da Imagem</Label>
         <Input
           id="imageUrl"
-          value={imageUrl}
-          onChange={(e) => onUpdate({ imageUrl: e.target.value })}
+          value={effectiveImageUrl}
+          onChange={(e) => handleUpdate({ imageUrl: e.target.value })}
           placeholder="https://exemplo.com/imagem.jpg"
         />
       </div>
@@ -43,8 +65,8 @@ const EnhancedImageProperties: React.FC<EnhancedImagePropertiesProps> = ({
         <Label htmlFor="altText">Texto Alternativo</Label>
         <Input
           id="altText"
-          value={altText}
-          onChange={(e) => onUpdate({ altText: e.target.value })}
+          value={effectiveAltText}
+          onChange={(e) => handleUpdate({ altText: e.target.value })}
           placeholder="Descrição da imagem"
         />
       </div>
@@ -52,8 +74,8 @@ const EnhancedImageProperties: React.FC<EnhancedImagePropertiesProps> = ({
       <div className="space-y-2">
         <Label htmlFor="borderRadius">Borda Arredondada</Label>
         <Select 
-          value={borderRadius}
-          onValueChange={(value) => onUpdate({ borderRadius: value })}
+          value={effectiveBorderRadius}
+          onValueChange={(value) => handleUpdate({ borderRadius: value })}
         >
           <SelectTrigger id="borderRadius">
             <SelectValue placeholder="Selecione" />
@@ -71,8 +93,8 @@ const EnhancedImageProperties: React.FC<EnhancedImagePropertiesProps> = ({
         <Label htmlFor="maxWidth">Largura Máxima</Label>
         <Input
           id="maxWidth"
-          value={maxWidth}
-          onChange={(e) => onUpdate({ maxWidth: e.target.value })}
+          value={effectiveMaxWidth}
+          onChange={(e) => handleUpdate({ maxWidth: e.target.value })}
           placeholder="100%, 500px, etc."
         />
       </div>
@@ -80,8 +102,8 @@ const EnhancedImageProperties: React.FC<EnhancedImagePropertiesProps> = ({
       <div className="space-y-2">
         <Label htmlFor="aspectRatio">Proporção</Label>
         <Select 
-          value={aspectRatio}
-          onValueChange={(value) => onUpdate({ aspectRatio: value })}
+          value={effectiveAspectRatio}
+          onValueChange={(value) => handleUpdate({ aspectRatio: value })}
         >
           <SelectTrigger id="aspectRatio">
             <SelectValue placeholder="Selecione" />

@@ -1,10 +1,10 @@
-
 import { QuizQuestion } from '../../types/quiz';
 
 export const styleExperienceQuestions: QuizQuestion[] = [
   {
     id: 'strategic-3',
     title: 'Com que frequência você se pega pensando: "Com que roupa eu vou?" — mesmo com o guarda-roupa cheio?',
+    text: 'Com que frequência você se pega pensando: "Com que roupa eu vou?" — mesmo com o guarda-roupa cheio?',
     type: 'text',
     multiSelect: 1,
     imageUrl: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745195440/daily-wardrobe-struggle_webp.webp',
@@ -30,6 +30,7 @@ export const styleExperienceQuestions: QuizQuestion[] = [
   {
     id: 'strategic-4',
     title: 'Qual desses objetivos mais representa o que você deseja com sua imagem pessoal?',
+    text: 'Qual desses objetivos mais representa o que você deseja com sua imagem pessoal?',
     type: 'text',
     multiSelect: 1,
     imageUrl: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745195444/confidence-presence_webp.webp',

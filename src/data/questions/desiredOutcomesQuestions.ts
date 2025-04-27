@@ -1,10 +1,10 @@
-
 import { QuizQuestion } from '../../types/quiz';
 
 export const desiredOutcomesQuestions: QuizQuestion[] = [
   {
     id: 'strategic-7',
     title: 'Qual desses resultados você mais gostaria de alcançar com os Guias de Estilo e Imagem?',
+    text: 'Qual desses resultados você mais gostaria de alcançar com os Guias de Estilo e Imagem?',
     type: 'text',
     multiSelect: 1,
     imageUrl: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745195456/effortless-styling_webp.webp',
