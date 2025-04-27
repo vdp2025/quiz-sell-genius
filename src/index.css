@@ -1,46 +1,28 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+   @tailwind base;
+   @tailwind components;
+   @tailwind utilities;
 
-/* Estilos globais e customizados */
-#root {
-  margin: 0 auto;
-  text-align: center;
-}
-
-@keyframes subtle-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.02); filter: brightness(1.05); }
-}
-
-.hover\:animate-subtle-pulse:hover {
-  animation: subtle-pulse 1.5s infinite ease-in-out;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #FAF9F7;
-}
-
-input::placeholder {
-  color: #999;
-  opacity: 0.8;
-}
-
-button:focus {
-  outline: none;
-}
-
-@media (max-width: 640px) {
-  #root {
-    padding: 1rem;
-  }
-}
+   @layer base {
+     :root {
+       --background: 36 33% 98%;
+       --foreground: 24 29% 20%;
+       --card: 0 0% 100%;
+       --card-foreground: 24 29% 20%;
+       --popover: 0 0% 100%;
+       --popover-foreground: 24 29% 20%;
+       --primary: 35 33% 60%;
+       --primary-foreground: 0 0% 100%;
+       --secondary: 20 52% 20%;
+       --secondary-foreground: 0 0% 100%;
+       --muted: 35 33% 96%;
+       --muted-foreground: 24 9% 50%;
+       --accent: 35 33% 90%;
+       --accent-foreground: 24 29% 20%;
+       --destructive: 0 62.8% 30.6%;
+       --destructive-foreground: 210 40% 98%;
+       --border: 35 33% 80%;
+       --input: 35 33% 80%;
+       --ring: 35 33% 60%;
+       --radius: 0.5rem;
+     }
+   }
