@@ -1,4 +1,3 @@
-
 export type QuizComponentType = 
   | 'header' 
   | 'section' 
@@ -61,6 +60,7 @@ export interface QuizComponentData {
     options?: string[];
     stageTitle?: string;
     stageNumber?: number;
+    totalStages?: number;
     
     // Question properties
     autoAdvance?: boolean;
@@ -83,16 +83,22 @@ export interface QuizComponentData {
     textColor?: string;
     
     // Result properties
-    resultLayout?: 'classic' | 'modern' | 'minimal';
+    resultLayout?: 'classic' | 'modern' | 'minimal' | 'custom';
     primaryStyleTitle?: string;
     secondaryStylesTitle?: string;
     showPercentages?: boolean;
     showDescriptions?: boolean;
+    showSecondaryStyles?: boolean;
     callToActionText?: string;
     callToActionUrl?: string;
+    offerTitle?: string;
+    offerDescription?: string;
     offerImageUrl?: string;
     authorImageUrl?: string;
     accentColor?: string;
+    benefitsTitle?: string;
+    benefits?: string[];
+    savedResultConfig?: string;
   };
   style?: QuizComponentStyle;
 }

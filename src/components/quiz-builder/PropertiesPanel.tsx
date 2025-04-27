@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { QuizComponentData, QuizStage } from '@/types/quizBuilder';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -11,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { XCircle, Settings } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import EnhancedImageProperties from './components/EnhancedImageProperties';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface PropertiesPanelProps {
   component: QuizComponentData | null;
@@ -227,6 +227,298 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
                       Adicionar Opção
                     </Button>
                   </div>
+                </div>
+              )}
+              
+              {component.type === 'stageResult' && (
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label>Título Principal</Label>
+                    <Input 
+                      value={component.data.title || ''} 
+                      onChange={(e) => onUpdate(component.id, { 
+                        data: { ...component.data, title: e.target.value } 
+                      })}
+                      placeholder="Seu Resultado de Estilo Pessoal"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>Subtítulo</Label>
+                    <Input 
+                      value={component.data.subtitle || ''} 
+                      onChange={(e) => onUpdate(component.id, { 
+                        data: { ...component.data, subtitle: e.target.value } 
+                      })}
+                      placeholder="Baseado nas suas escolhas, calculamos seu estilo predominante"
+                    />
+                  </div>
+
+                  <Card className="p-4">
+                    <h3 className="font-medium mb-3">Configuração do Resultado</h3>
+                    
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Título do Estilo Principal</Label>
+                        <Input 
+                          value={component.data.primaryStyleTitle || ''} 
+                          onChange={(e) => onUpdate(component.id, { 
+                            data: { ...component.data, primaryStyleTitle: e.target.value } 
+                          })}
+                          placeholder="Seu Estilo Predominante"
+                        />
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="showSecondaryStyles"
+                          checked={component.data.showSecondaryStyles !== false}
+                          onCheckedChange={(checked) => 
+                            onUpdate(component.id, { 
+                              data: { ...component.data, showSecondaryStyles: !!checked }
+                            })
+                          }
+                        />
+                        <Label htmlFor="showSecondaryStyles">Mostrar estilos secundários</Label>
+                      </div>
+                      
+                      {component.data.showSecondaryStyles !== false && (
+                        <div className="space-y-2">
+                          <Label>Título dos Estilos Secundários</Label>
+                          <Input 
+                            value={component.data.secondaryStylesTitle || ''} 
+                            onChange={(e) => onUpdate(component.id, { 
+                              data: { ...component.data, secondaryStylesTitle: e.target.value } 
+                            })}
+                            placeholder="Seus Estilos Complementares"
+                          />
+                        </div>
+                      )}
+                      
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="showPercentages"
+                          checked={component.data.showPercentages !== false}
+                          onCheckedChange={(checked) => 
+                            onUpdate(component.id, { 
+                              data: { ...component.data, showPercentages: !!checked }
+                            })
+                          }
+                        />
+                        <Label htmlFor="showPercentages">Mostrar porcentagens</Label>
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card className="p-4">
+                    <h3 className="font-medium mb-3">Configuração da Oferta</h3>
+                    
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Título da Oferta</Label>
+                        <Input 
+                          value={component.data.offerTitle || ''} 
+                          onChange={(e) => onUpdate(component.id, { 
+                            data: { ...component.data, offerTitle: e.target.value } 
+                          })}
+                          placeholder="Conheça o Guia Completo de Estilo"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>URL da Imagem da Oferta</Label>
+                        <Input 
+                          value={component.data.offerImageUrl || ''} 
+                          onChange={(e) => onUpdate(component.id, { 
+                            data: { ...component.data, offerImageUrl: e.target.value } 
+                          })}
+                          placeholder="https://exemplo.com/imagem.jpg"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label>URL da Imagem do Autor</Label>
+                        <Input 
+                          value={component.data.authorImageUrl || ''} 
+                          onChange={(e) => onUpdate(component.id, { 
+                            data: { ...component.data, authorImageUrl: e.target.value } 
+                          })}
+                          placeholder="https://exemplo.com/autor.jpg"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label>Título dos Benefícios</Label>
+                        <Input 
+                          value={component.data.benefitsTitle || ''} 
+                          onChange={(e) => onUpdate(component.id, { 
+                            data: { ...component.data, benefitsTitle: e.target.value } 
+                          })}
+                          placeholder="O que você vai encontrar no guia:"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label>Benefícios</Label>
+                        {(component.data.benefits || [
+                          'Análise completa do seu estilo pessoal',
+                          'Guia de combinações perfeitas para seu tipo',
+                          'Dicas de peças essenciais para seu guarda-roupa',
+                          'Como valorizar seus pontos fortes e criar seu estilo único'
+                        ]).map((benefit, index) => (
+                          <div key={index} className="flex gap-2 mb-2">
+                            <Input 
+                              value={benefit} 
+                              onChange={(e) => {
+                                const newBenefits = [...(component.data.benefits || [
+                                  'Análise completa do seu estilo pessoal',
+                                  'Guia de combinações perfeitas para seu tipo',
+                                  'Dicas de peças essenciais para seu guarda-roupa',
+                                  'Como valorizar seus pontos fortes e criar seu estilo único'
+                                ])];
+                                newBenefits[index] = e.target.value;
+                                onUpdate(component.id, { 
+                                  data: { ...component.data, benefits: newBenefits } 
+                                });
+                              }}
+                              placeholder={`Benefício ${index + 1}`}
+                            />
+                            <Button 
+                              variant="destructive" 
+                              size="icon"
+                              onClick={() => {
+                                const newBenefits = [...(component.data.benefits || [
+                                  'Análise completa do seu estilo pessoal',
+                                  'Guia de combinações perfeitas para seu tipo',
+                                  'Dicas de peças essenciais para seu guarda-roupa',
+                                  'Como valorizar seus pontos fortes e criar seu estilo único'
+                                ])];
+                                newBenefits.splice(index, 1);
+                                onUpdate(component.id, { 
+                                  data: { ...component.data, benefits: newBenefits } 
+                                });
+                              }}
+                            >
+                              <XCircle className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                        <Button
+                          onClick={() => {
+                            const newBenefits = [...(component.data.benefits || [
+                              'Análise completa do seu estilo pessoal',
+                              'Guia de combinações perfeitas para seu tipo',
+                              'Dicas de peças essenciais para seu guarda-roupa',
+                              'Como valorizar seus pontos fortes e criar seu estilo único'
+                            ]), ''];
+                            onUpdate(component.id, { 
+                              data: { ...component.data, benefits: newBenefits } 
+                            });
+                          }}
+                          className="w-full mt-2 bg-[#B89B7A] hover:bg-[#A38A69] text-white"
+                        >
+                          Adicionar Benefício
+                        </Button>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label>Texto do Botão de Call to Action</Label>
+                        <Input 
+                          value={component.data.callToActionText || ''} 
+                          onChange={(e) => onUpdate(component.id, { 
+                            data: { ...component.data, callToActionText: e.target.value } 
+                          })}
+                          placeholder="Conhecer o Guia Completo"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label>URL do Call to Action</Label>
+                        <Input 
+                          value={component.data.callToActionUrl || ''} 
+                          onChange={(e) => onUpdate(component.id, { 
+                            data: { ...component.data, callToActionUrl: e.target.value } 
+                          })}
+                          placeholder="https://exemplo.com/guia"
+                        />
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card className="p-4">
+                    <h3 className="font-medium mb-3">Cores</h3>
+                    
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Cor de Destaque</Label>
+                        <div className="flex gap-2">
+                          <Input 
+                            type="color"
+                            value={component.data.accentColor || '#B89B7A'} 
+                            onChange={(e) => onUpdate(component.id, { 
+                              data: { ...component.data, accentColor: e.target.value } 
+                            })}
+                            className="w-12 p-1 h-10"
+                          />
+                          <Input 
+                            type="text"
+                            value={component.data.accentColor || '#B89B7A'} 
+                            onChange={(e) => onUpdate(component.id, { 
+                              data: { ...component.data, accentColor: e.target.value } 
+                            })}
+                            placeholder="#B89B7A"
+                            className="flex-1"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label>Cor de Fundo</Label>
+                        <div className="flex gap-2">
+                          <Input 
+                            type="color"
+                            value={component.style?.backgroundColor || '#FAF9F7'} 
+                            onChange={(e) => onUpdate(component.id, { 
+                              style: { ...component.style, backgroundColor: e.target.value } 
+                            })}
+                            className="w-12 p-1 h-10"
+                          />
+                          <Input 
+                            type="text"
+                            value={component.style?.backgroundColor || '#FAF9F7'} 
+                            onChange={(e) => onUpdate(component.id, { 
+                              style: { ...component.style, backgroundColor: e.target.value } 
+                            })}
+                            placeholder="#FAF9F7"
+                            className="flex-1"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label>Cor do Texto</Label>
+                        <div className="flex gap-2">
+                          <Input 
+                            type="color"
+                            value={component.style?.textColor || '#432818'} 
+                            onChange={(e) => onUpdate(component.id, { 
+                              style: { ...component.style, textColor: e.target.value } 
+                            })}
+                            className="w-12 p-1 h-10"
+                          />
+                          <Input 
+                            type="text"
+                            value={component.style?.textColor || '#432818'} 
+                            onChange={(e) => onUpdate(component.id, { 
+                              style: { ...component.style, textColor: e.target.value } 
+                            })}
+                            placeholder="#432818"
+                            className="flex-1"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
                 </div>
               )}
               
