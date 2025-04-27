@@ -1,4 +1,5 @@
-import './styles/simple.css'; // Usando CSS simples sem diretivas Tailwind
+
+import './index.css'; // Use the index.css file with Tailwind directives
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 

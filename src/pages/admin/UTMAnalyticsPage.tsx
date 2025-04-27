@@ -1,5 +1,7 @@
+
 import React, { useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
+// These components are commented out since they don't exist yet
 // import { UTMAnalytics } from '@/components/analytics/UTMAnalytics';
 // import { QuizMetrics } from '@/components/analytics/QuizMetrics';
 
