@@ -10,8 +10,6 @@ interface AdminLayoutProps {
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   const location = useLocation();
 
-  // Removido: autenticação e logout
-
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -88,7 +86,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               </Link>
             </div>
           </div>
-          {/* Removido: botão de logout */}
         </Sidebar>
         <main className="flex-1 overflow-auto bg-[#FAF9F7]">
           {children}

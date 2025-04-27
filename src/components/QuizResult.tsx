@@ -25,6 +25,13 @@ const QuizResult: React.FC<QuizResultProps> = ({
 }) => {
   const [userName, setUserName] = useState<string>('Visitante');
   
+  useEffect(() => {
+    const storedName = localStorage.getItem('userName');
+    if (storedName) {
+      setUserName(storedName);
+    }
+  }, []);
+  
   const [config, setConfig] = useState<ResultPageConfig | null>(null);
   
   useEffect(() => {
