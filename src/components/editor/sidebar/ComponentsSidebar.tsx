@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -14,7 +15,7 @@ import {
   Gift,
   LayoutTemplate,
   Quote,
-  ImagePlus
+  Images
 } from 'lucide-react';
 import { EditorBlock } from '@/types/editor';
 
@@ -28,7 +29,7 @@ export const ComponentsSidebar: React.FC<ComponentsSidebarProps> = ({
   const components = [
     { type: 'header', label: 'Cabeçalho', icon: LayoutTemplate },
     { type: 'hero-section', label: 'Seção Hero', icon: Quote },
-    { type: 'bonus-carousel', label: 'Carrossel de Bônus', icon: ImagePlus },
+    { type: 'bonus-carousel', label: 'Carrossel de Bônus', icon: Images },
     { type: 'headline', label: 'Título', icon: Type },
     { type: 'image', label: 'Imagem', icon: Image },
     { type: 'text', label: 'Texto', icon: Type },

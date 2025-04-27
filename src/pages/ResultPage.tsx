@@ -1,37 +1,50 @@
+
 import React, { useEffect } from 'react';
 import { useQuiz } from '@/hooks/useQuiz';
 import { useGlobalStyles } from '@/hooks/useGlobalStyles';
 import { Header } from '@/components/result/Header';
 import { styleConfig } from '@/config/styleConfig';
-import { Progress } from '@/components/ui/progress';
 import { Card } from '@/components/ui/card';
-import { ShoppingCart } from 'lucide-react';
-import { AnimatedWrapper } from '@/components/ui/animated-wrapper';
-import SecondaryStylesSection from '@/components/quiz-result/SecondaryStylesSection';
-import ErrorState from '@/components/result/ErrorState';
-import MotivationSection from '@/components/result/MotivationSection';
-import MentorSection from '@/components/result/MentorSection';
-import GuaranteeSection from '@/components/result/GuaranteeSection';
-import ProductShowcase from '@/components/quiz-result/sales/ProductShowcase';
-import BenefitList from '@/components/quiz-result/sales/BenefitList';
-import Testimonials from '@/components/quiz-result/sales/Testimonials';
 import { Button } from '@/components/ui/button';
-import { CheckCircle } from 'lucide-react';
+import { ShoppingCart, Shield, CheckCircle } from 'lucide-react';
+import SecondaryStylesSection from '@/components/quiz-result/SecondaryStylesSection';
 
 const ResultPage: React.FC = () => {
-  const { primaryStyle, secondaryStyles } = useQuiz();
+  const { primaryStyle, secondaryStyles, quizResult } = useQuiz();
   const { globalStyles } = useGlobalStyles();
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    console.log("ResultPage mounted. Quiz result:", quizResult);
+  }, [quizResult]);
 
   if (!primaryStyle) {
-    return <ErrorState />;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <h1 className="text-2xl font-playfair text-[#432818] mb-4">
+            Resultados não encontrados
+          </h1>
+          <p className="text-[#8F7A6A] mb-6">
+            Parece que você ainda não completou o quiz.
+          </p>
+          <a
+            href="/"
+            className="inline-block px-6 py-3 bg-[#B89B7A] hover:bg-[#8F7A6A] text-white rounded-md transition-colors"
+          >
+            Fazer o Quiz
+          </a>
+        </div>
+      </div>
+    );
   }
 
   const { category } = primaryStyle;
-  const { image, guideImage, description } = styleConfig[category];
+  const { image, guideImage, description } = styleConfig[category] || {
+    image: "https://res.cloudinary.com/dqljyf76t/image/upload/v1744920983/Espanhol_Portugu%C3%AAs_8_cgrhuw.webp",
+    guideImage: "https://res.cloudinary.com/dqljyf76t/image/upload/v1744911666/C%C3%B3pia_de_Template_Dossi%C3%AA_Completo_2024_15_-_Copia_ssrhu3.webp",
+    description: "Descrição não disponível para este estilo."
+  };
 
   return (
     <div
@@ -52,55 +65,77 @@ const ResultPage: React.FC = () => {
       <div className="container mx-auto px-4 py-6 max-w-4xl">
         {/* Estilo Principal */}
         <Card className="p-6 mb-10 bg-white shadow-md border border-[#B89B7A]/20">
-          <AnimatedWrapper show={true}>
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-playfair text-[#aa6b5d] mb-4">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="space-y-4">
+              <h2 className="text-2xl font-playfair text-[#aa6b5d] mb-2">
                 Seu Estilo é {category}
               </h2>
-              
-              <div className="max-w-md mx-auto mb-6">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-[#8F7A6A]">Porcentagem de compatibilidade</span>
-                  <span className="text-[#aa6b5d] font-medium">{primaryStyle.percentage}%</span>
-                </div>
-                <Progress 
-                  value={primaryStyle.percentage} 
-                  className="h-2 bg-[#F3E8E6]"
-                  indicatorClassName="bg-[#B89B7A]"
-                />
+              <p className="text-[#432818] leading-relaxed">{description}</p>
+
+              <div className="bg-white rounded-lg p-4 shadow-sm border border-[#B89B7A]/10">
+                <h3 className="text-lg font-medium text-[#432818] mb-2">
+                  Seus Estilos Complementares
+                </h3>
+                <SecondaryStylesSection secondaryStyles={secondaryStyles} />
               </div>
             </div>
-
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div className="space-y-4">
-                <p className="text-[#432818] leading-relaxed">{description}</p>
-
-                <div className="bg-white rounded-lg p-4 shadow-sm border border-[#B89B7A]/10">
-                  <h3 className="text-lg font-medium text-[#432818] mb-2">
-                    Seus Estilos Complementares
-                  </h3>
-                  <SecondaryStylesSection secondaryStyles={secondaryStyles} />
-                </div>
-              </div>
-              <div>
-                <img
-                  src={image}
-                  alt={`Estilo ${category}`}
-                  className="w-full h-auto rounded-lg shadow-md hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-            </div>
-            <div className="mt-8">
+            <div>
               <img
-                src={guideImage}
-                alt={`Guia de Estilo ${category}`}
-                className="w-full h-auto rounded-lg shadow-md hover:scale-105 transition-transform duration-300"
+                src={image}
+                alt={`Estilo ${category}`}
+                className="w-full h-auto rounded-lg shadow-md"
               />
             </div>
-          </AnimatedWrapper>
+          </div>
+          <div className="mt-8">
+            <img
+              src={guideImage}
+              alt={`Guia ${category}`}
+              className="w-full h-auto rounded-lg shadow-md"
+            />
+          </div>
         </Card>
 
-        <MotivationSection />
+        {/* Motivação */}
+        <div className="text-center mb-10 space-y-4">
+          <h2 className="text-2xl md:text-3xl font-playfair text-[#aa6b5d]">
+            Você já descobriu seu Estilo e isso é muito poderoso.
+          </h2>
+          <p className="text-lg text-[#432818]">
+            Conhecimento é clareza.<br />
+            E clareza muda o jeito que você se vê, se escolhe, se posiciona.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-6 text-left mt-8">
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <p className="text-[#432818] leading-relaxed">
+                <em>
+                  Mas é na ação que a verdadeira transformação acontece.
+                  É quando você aplica o que aprendeu… que o espelho começa a
+                  contar uma nova história.
+                </em>
+              </p>
+              <p className="text-[#432818] mt-4 leading-relaxed">
+                <strong>
+                  Não é sobre mudar quem você é.<br />
+                  É sobre finalmente Vestir-se de Você.
+                </strong>
+              </p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <p className="text-[#432818] leading-relaxed">
+                E pra isso, eu preparei o caminho completo.<br />
+                Simples. Prático. Estratégico.
+              </p>
+              <p className="text-[#432818] mt-4 leading-relaxed">
+                <strong>
+                  Pra você transformar estilo em presença.<br />
+                  E imagem em poder.
+                </strong>
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* Oferta + Bônus */}
         <Card className="p-6 mb-10 bg-white shadow-md border border-[#B89B7A]/20">
@@ -207,7 +242,7 @@ const ResultPage: React.FC = () => {
                 (window.location.href =
                   'https://pay.hotmart.com/W98977034C?checkoutMode=10&bid=1744967466912')
               }
-              className="w-full max-w-xl mx-auto text-white py-6 text-lg rounded-md bg-brand-gold hover:bg-[#A38A69] transition-colors"
+              className="w-full max-w-xl mx-auto text-white py-6 text-lg rounded-md bg-brand-gold"
             >
               <ShoppingCart className="w-5 h-5 mr-2" />
               Quero meu Guia + Bônus por R$39,00
@@ -218,9 +253,121 @@ const ResultPage: React.FC = () => {
           </div>
         </Card>
 
-        <Testimonials />
-        <MentorSection />
-        <GuaranteeSection />
+        <Card className="p-6 mb-10 bg-white shadow-md border border-[#B89B7A]/20">
+          <h2 className="text-2xl font-playfair text-[#aa6b5d] mb-6 text-center">
+            💬 Depoimentos de mulheres que já viveram essa transformação:
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                text:
+                  'Antes, a roupa me vestia. Hoje, eu me visto de propósito. A consultoria me  ' +
+                  'fez dar vida à mulher que sempre existiu em mim.',
+                name: 'Mariangela',
+                role: 'Engenheira',
+              },
+              {
+                text:
+                  'Aprendi a me valorizar e a dar valor para a imagem que transmito. As pessoas  ' +
+                  'começaram a me olhar diferente — porque eu estava diferente.',
+                name: 'Patrícia Paranhos',
+                role: 'Advogada',
+              },
+              {
+                text:
+                  'A Gisele me ensinou a entender o que comunico com as roupas. Hoje compro com  ' +
+                  'consciência, estilo e propósito.',
+                name: 'Sônia Spier',
+                role: 'Terapeuta',
+              },
+            ].map((testimonial, index) => (
+              <div key={index} className="bg-[#fff7f3] p-4 rounded-lg">
+                <p className="italic text-[#432818] mb-4">
+                  "{testimonial.text}"
+                </p>
+                <div className="flex items-center gap-2">
+                  <div className="h-1 w-8 bg-[#aa6b5d]"></div>
+                  <div>
+                    <p className="font-medium text-[#432818]">
+                      {testimonial.name}
+                    </p>
+                    <p className="text-sm text-[#432818]/70">
+                      {testimonial.role}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 text-center">
+            <img
+              src="https://res.cloudinary.com/dzt2fe3ij/image/upload/v1745104587/Captura_de_tela_2025-03-31_034319_peuoc8.webp"
+              alt="Antes e Depois"
+              className="w-full h-auto rounded-lg mt-6"
+            />
+          </div>
+        </Card>
+
+        <Card className="p-6 mb-10 bg-white shadow-md border border-[#B89B7A]/20">
+          <h2 className="text-2xl font-playfair text-[#aa6b5d] mb-6 text-center">
+            Sobre sua mentora
+          </h2>
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h3 className="text-xl font-medium text-[#432818] mb-2">
+                Gisele Galvão
+              </h3>
+              <p className="text-[#432818] mb-4">
+                Consultora de Imagem e Estilo, Personal Branding, Estrategista de  
+                Marca pessoal e Especialista em coloração pessoal com Certificação  
+                internacional.
+              </p>
+              <p className="text-[#432818] mb-4">
+                Advogada de formação. Mãe da Victória, esposa do Fabrício.
+              </p>
+              <p className="text-[#432818]">
+                Apaixonada pela vida, pelos detalhes, viagens e tudo que me  
+                proporcione crescer como ser humano. Colérica, virginiana, paciente,  
+                pacificadora e muito empata.
+              </p>
+            </div>
+            <div className="space-y-6">
+              <img
+                src="https://res.cloudinary.com/dqljyf76t/image/upload/v1744911667/WhatsApp_Image_2025-04-02_at_09.40.53_cv8p5y.webp"
+                alt="Gisele Galvão"
+                className="w-full h-auto rounded-lg shadow-md"
+              />
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-6 mb-10 bg-white shadow-md border border-[#B89B7A]/20">
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <div className="md:w-1/4 flex justify-center">
+              <img
+                src="https://res.cloudinary.com/dqljyf76t/image/upload/v1744916216/C%C3%B3pia_de_01._P%C3%A1gina_-_Produto_de_Entrada_2_hamaox.webp"
+                alt="Garantia de 7 dias"
+                className="w-32 h-32 object-contain"
+              />
+            </div>
+            <div className="md:w-3/4">
+              <h3 className="text-xl font-medium text-[#aa6b5d] mb-2">
+                🛡️ Garantia de 7 dias
+              </h3>
+              <p className="text-[#432818] mb-4">
+                Você tem uma semana para acessar o conteúdo completo, testar e  
+                aplicar. Se não fizer sentido pra você, devolvemos 100% do seu  
+                investimento. Sem burocracia.
+              </p>
+              <div className="flex items-center">
+                <Shield className="h-5 w-5 text-[#aa6b5d] mr-2" />
+                <span className="text-[#432818] font-medium">
+                  Satisfação garantida ou seu dinheiro de volta
+                </span>
+              </div>
+            </div>
+          </div>
+        </Card>
       </div>
     </div>
   );

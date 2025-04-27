@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -21,7 +22,7 @@ import {
   FileText,
   Maximize,
   HelpCircle,
-  ImagePlus,
+  Images,
   Code,
   Wand2
 } from 'lucide-react';
@@ -50,7 +51,7 @@ const componentGroups = [
       { name: 'Garantia', type: 'guarantee', icon: <Award className="h-4 w-4" /> },
       { name: 'Vídeo', type: 'video', icon: <Video className="h-4 w-4" /> },
       { name: 'FAQ', type: 'faq', icon: <HelpCircle className="h-4 w-4" /> },
-      { name: 'Carrossel', type: 'carousel', icon: <ImagePlus className="h-4 w-4" /> },
+      { name: 'Carrossel', type: 'carousel', icon: <Images className="h-4 w-4" /> },
     ]
   },
   {
