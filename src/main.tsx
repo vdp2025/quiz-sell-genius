@@ -1,5 +1,5 @@
 
-import './index.css'; // Use the index.css file with Tailwind directives
+import './index.css'; // Import the fixed CSS file
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 
