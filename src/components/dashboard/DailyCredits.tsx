@@ -1,59 +1,30 @@
-
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { CirclePlus, History, Award } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CircleUser, Clock } from 'lucide-react';
 
-interface DailyCreditsProps {
-  credits: number;
-  maxCredits: number;
-  lastRenewal: string;
-  nextRenewal: string;
-}
-
-export const DailyCredits: React.FC<DailyCreditsProps> = ({
-  credits = 10,
-  maxCredits = 20,
-  lastRenewal = '2025-04-27',
-  nextRenewal = '2025-04-28',
-}) => {
-  const percentage = (credits / maxCredits) * 100;
-
+export const DailyCredits: React.FC = () => {
   return (
-    <Card className="border-[#9b87f5] shadow-sm">
+    <Card className="mt-6">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-medium flex items-center">
-          <Award className="mr-2 h-5 w-5 text-[#9b87f5]" />
+        <CardTitle className="text-[#432818] flex items-center text-lg">
+          <CircleUser className="w-5 h-5 mr-2 text-[#9b87f5]" />
           Créditos Diários
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Créditos disponíveis</span>
-            <span className="font-medium">{credits}/{maxCredits}</span>
-          </div>
-          
-          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-[#9b87f5]" 
-              style={{ width: `${percentage}%` }}
-            />
-          </div>
-          
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <div className="flex items-center">
-              <History className="h-3 w-3 mr-1" />
-              <span>Renovado: {new Date(lastRenewal).toLocaleDateString()}</span>
+        <div className="flex justify-between items-center">
+          <div>
+            <div className="text-3xl font-bold text-[#432818]">17/30</div>
+            <div className="text-sm text-gray-500 flex items-center mt-1">
+              <Clock className="w-4 h-4 mr-1" />
+              Renovação em 7h 43min
             </div>
-            <div className="flex items-center">
-              <CirclePlus className="h-3 w-3 mr-1" />
-              <span>Próxima renovação: {new Date(nextRenewal).toLocaleDateString()}</span>
-            </div>
+          </div>
+          <div className="w-20 h-20 rounded-full border-4 border-[#9b87f5] flex items-center justify-center">
+            <span className="text-xl font-bold text-[#9b87f5]">56%</span>
           </div>
         </div>
       </CardContent>
     </Card>
   );
-};
-
-export default DailyCredits;
+}; 
