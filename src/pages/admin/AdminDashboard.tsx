@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -10,6 +11,7 @@ import {
   Layers
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { DailyCredits } from '@/components/dashboard/DailyCredits';
 
 export default function AdminDashboard() {
   const menuItems = [
@@ -50,6 +52,15 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-[#FAF9F7] p-8">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold text-[#1A1818] mb-8">Painel de Administração</h1>
+        
+        <div className="mb-8">
+          <DailyCredits 
+            credits={15} 
+            maxCredits={20} 
+            lastRenewal="2025-04-27" 
+            nextRenewal="2025-04-28" 
+          />
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {menuItems.map((item, index) => (
