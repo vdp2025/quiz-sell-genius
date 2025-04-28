@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useQuiz } from '../context/QuizContext';
+
+import React, { useState } from 'react';
+import { useQuizContext } from '../context/QuizContext';
 import { UserResponse } from '@/types/quiz';
 import { toast } from './ui/use-toast';
 import { QuizContainer } from './quiz/QuizContainer';
@@ -16,7 +17,7 @@ const QuizPage: React.FC = () => {
   const [currentStrategicQuestionIndex, setCurrentStrategicQuestionIndex] = useState(0);
   const [strategicAnswers, setStrategicAnswers] = useState<Record<string, string[]>>({});
 
-  // Get quiz logic functions
+  // Get quiz logic functions from context
   const {
     currentQuestion,
     currentQuestionIndex,
@@ -29,7 +30,7 @@ const QuizPage: React.FC = () => {
     calculateResults,
     handleStrategicAnswer: saveStrategicAnswer,
     submitQuizIfComplete
-  } = useQuiz();
+  } = useQuizContext();
 
   // Handle strategic answer
   const handleStrategicAnswer = (response: UserResponse) => {
@@ -61,7 +62,7 @@ const QuizPage: React.FC = () => {
     }
   };
 
-  // Função wrapper para adaptar resposta
+  // Function wrapper to adapt response
   const handleQuizAnswer = (response: UserResponse) => {
     handleAnswer(response.questionId, response.selectedOptions);
   };
@@ -146,7 +147,7 @@ const QuizPage: React.FC = () => {
             currentQuestion={currentQuestion}
             currentAnswers={currentAnswers}
             handleAnswerSubmit={handleQuizAnswer}
-            handleNextClick={handleNext}
+            handleNextClick={handleNextClick}
             handlePrevious={handlePrevious}
           />
           

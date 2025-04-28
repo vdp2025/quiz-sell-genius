@@ -12,14 +12,14 @@ import SingleChoiceComponent from '../components/SingleChoiceComponent';
 
 interface ComponentRendererProps {
   component: QuizComponentData;
-  isEditing: boolean;
-  isSelected: boolean;
+  isEditing?: boolean;
+  isSelected?: boolean;
 }
 
 const ComponentRenderer: React.FC<ComponentRendererProps> = ({
   component,
-  isEditing,
-  isSelected
+  isEditing = false,
+  isSelected = false
 }) => {
   const renderComponent = () => {
     const props = {
