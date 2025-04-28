@@ -1,145 +1,162 @@
+
 import React, { useEffect, useState } from 'react';
-import { useQuiz } from '@/hooks/useQuiz';
-import { useGlobalStyles } from '@/hooks/useGlobalStyles';
-import { Header } from '@/components/result/Header';
+import { QuizResult, StyleResult } from '@/types/quiz';
 import { styleConfig } from '@/config/styleConfig';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ShoppingCart, Shield, CheckCircle } from 'lucide-react';
-import SecondaryStylesSection from '@/components/quiz-result/SecondaryStylesSection';
 
 const ResultPage: React.FC = () => {
-  // 1. Estado para dados editados
-  const [editedResult, setEditedResult] = useState<any>(null);
+  const [result, setResult] = useState<QuizResult | null>(null);
+  const [userName, setUserName] = useState<string>('');
 
-  // 2. Hooks originais
-  const { primaryStyle, secondaryStyles, quizResult } = useQuiz();
-  const { globalStyles } = useGlobalStyles();
-
-  // 3. Carregar do localStorage
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("quizData") || "null");
-    if (saved && saved.resultado && saved.resultado.titulo) {
-      setEditedResult(saved.resultado);
+    const storedResult = localStorage.getItem('quizResult');
+    const storedName = localStorage.getItem('userName');
+    
+    if (storedResult) {
+      setResult(JSON.parse(storedResult));
     }
-    window.scrollTo(0, 0);
-    console.log("ResultPage mounted. Quiz result:", quizResult);
-  }, [quizResult]);
+    if (storedName) {
+      setUserName(storedName);
+    }
+  }, []);
 
-  // 4. Se não houver resultado, mostra mensagem padrão
-  if (!primaryStyle && !editedResult) {
+  if (!result || !result.primaryStyle) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
-          <h1 className="text-2xl font-playfair text-[#432818] mb-4">
-            Resultados não encontrados
-          </h1>
-          <p className="text-[#8F7A6A] mb-6">
-            Parece que você ainda não completou o quiz.
-          </p>
-          <a
-            href="/"
-            className="inline-block px-6 py-3 bg-[#B89B7A] hover:bg-[#8F7A6A] text-white rounded-md transition-colors"
-          >
-            Fazer o Quiz
-          </a>
+      <div className="min-h-screen bg-[#fffaf7] flex items-center justify-center text-[#432818]">
+        <div className="text-center p-6">
+          <h1 className="text-2xl font-bold mb-4">Resultado não encontrado</h1>
+          <p className="mb-4">Não foi possível encontrar o resultado do seu quiz.</p>
+          <a href="/" className="text-[#B89B7A] hover:underline">Voltar e refazer o quiz</a>
         </div>
       </div>
     );
   }
 
-  // 5. Se houver resultado editado, renderiza ele
-  if (editedResult) {
-    return (
-      <div
-        className="min-h-screen bg-[#fffaf7]"
-        style={{
-          backgroundColor: globalStyles.backgroundColor || '#fffaf7',
-          color: globalStyles.textColor || '#432818',
-          fontFamily: globalStyles.fontFamily || 'inherit',
-        }}
-      >
-        <Header
-          primaryStyle={primaryStyle}
-          logoHeight={globalStyles.logoHeight}
-          logo={globalStyles.logo}
-          logoAlt={globalStyles.logoAlt}
-        />
-
-        <div className="container mx-auto px-4 py-6 max-w-4xl">
-          <Card className="p-6 mb-10 bg-white shadow-md border border-[#B89B7A]/20">
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div className="space-y-4">
-                <h2 className="text-2xl font-playfair text-[#aa6b5d] mb-2">
-                  {editedResult.titulo}
-                </h2>
-                <p className="text-[#432818] leading-relaxed">{editedResult.descricao}</p>
-                {editedResult.oferta && (
-                  <div className="bg-white rounded-lg p-4 shadow-sm border border-[#B89B7A]/10">
-                    <h3 className="text-lg font-medium text-[#432818] mb-2">
-                      Oferta Especial
-                    </h3>
-                    <p>{editedResult.oferta}</p>
-                  </div>
-                )}
-              </div>
-              <div>
-                {editedResult.imagem && (
-                  <img
-                    src={editedResult.imagem}
-                    alt="Imagem do resultado"
-                    className="w-full h-auto rounded-lg shadow-md"
-                  />
-                )}
-              </div>
-            </div>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
-  // 6. Se não houver edição, renderiza o fluxo padrão
-  const { category } = primaryStyle;
-  const { image, guideImage, description } = styleConfig[category] || {
-    image: "https://res.cloudinary.com/dqljyf76t/image/upload/v1744920983/Espanhol_Portugu%C3%AAs_8_cgrhuw.webp",
-    guideImage: "https://res.cloudinary.com/dqljyf76t/image/upload/v1744911666/C%C3%B3pia_de_Template_Dossi%C3%AA_Completo_2024_15_-_Copia_ssrhu3.webp",
-    description: "Descrição não disponível para este estilo."
+  const { primaryStyle, secondaryStyles } = result;
+  const styleInfo = styleConfig[primaryStyle.category] || {
+    image: 'https://via.placeholder.com/400x300',
+    description: 'Descrição do estilo não encontrada.',
+    guideImage: 'https://via.placeholder.com/400x300'
   };
 
   return (
-    <div className="min-h-screen bg-[#fffaf7]" style={{
-      backgroundColor: globalStyles.backgroundColor || '#fffaf7',
-      color: globalStyles.textColor || '#432818',
-      fontFamily: globalStyles.fontFamily || 'inherit',
-    }}>
-      <Header
-        primaryStyle={primaryStyle}
-        logoHeight={globalStyles.logoHeight}
-        logo={globalStyles.logo}
-        logoAlt={globalStyles.logoAlt}
-      />
+    <div className="min-h-screen bg-[#fffaf7]">
+      <header className="bg-white py-8 border-b border-[#B89B7A]/20">
+        <div className="container mx-auto px-4">
+          <h1 className="text-3xl font-bold text-center text-[#432818]">
+            {userName ? `${userName}, seu Estilo é ${primaryStyle.category}` : `Seu Estilo é ${primaryStyle.category}`}
+          </h1>
+        </div>
+      </header>
 
-      <div className="container mx-auto px-4 py-6 max-w-4xl">
-        <Card className="p-6 mb-10 bg-white shadow-md border border-[#B89B7A]/20">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="space-y-4">
-              <h2 className="text-2xl font-playfair text-[#aa6b5d] mb-2">
-                {category}
-              </h2>
-              <p className="text-[#432818] leading-relaxed">{description}</p>
+      <main className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-1 text-sm">
+              <span>Porcentagem de compatibilidade</span>
+              <span className="font-medium">{primaryStyle.percentage}%</span>
             </div>
-            <div>
-              <img
-                src={image}
-                alt="Imagem do estilo"
-                className="w-full h-auto rounded-lg shadow-md"
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className="bg-[#B89B7A] h-2 rounded-full"
+                style={{ width: `${primaryStyle.percentage}%` }}
               />
             </div>
           </div>
-        </Card>
-        {/* Se quiser, adicione mais seções aqui, como SecondaryStylesSection */}
-      </div>
+
+          <div className="grid md:grid-cols-2 gap-8 items-start">
+            <div>
+              <p className="mb-4">{styleInfo.description}</p>
+              
+              <div className="bg-[#faf7f5] p-4 rounded-lg">
+                <h3 className="font-medium mb-2">Seus Estilos Secundários</h3>
+                <div className="space-y-3">
+                  {secondaryStyles.slice(0, 2).map((style) => (
+                    <div key={style.category}>
+                      <div className="flex justify-between items-center mb-1 text-xs">
+                        <span>{style.category}</span>
+                        <span>{style.percentage}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-1.5">
+                        <div
+                          className="bg-[#B89B7A] h-1.5 rounded-full"
+                          style={{ width: `${style.percentage}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div>
+              <img
+                src={styleInfo.image}
+                alt={`Estilo ${primaryStyle.category}`}
+                className="w-full h-auto rounded-lg shadow"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Seção de Oferta */}
+        <div className="bg-white p-6 rounded-lg shadow-md mb-8 text-center">
+          <h2 className="text-2xl font-bold mb-4 text-[#B89B7A]">
+            Guia Completo de Estilo + Bônus Exclusivos
+          </h2>
+          <p className="mb-4">
+            Aprenda a aplicar seu estilo pessoal com clareza e autenticidade no seu dia a dia.
+          </p>
+          <div className="mb-6">
+            <img
+              src={styleInfo.guideImage || "https://res.cloudinary.com/dqljyf76t/image/upload/v1744911682/C%C3%B3pia_de_MOCKUPS_13_znzbks.webp"}
+              alt="Guia de Estilo"
+              className="w-full max-w-md mx-auto h-auto rounded-lg shadow"
+            />
+          </div>
+
+          <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-10 mb-6">
+            <div className="text-center md:text-right">
+              <p className="text-sm text-[#432818]/60 mb-1">Valor Total</p>
+              <p className="text-xl line-through text-[#432818]/60">
+                R$ 175,00
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-[#B89B7A] mb-1">Oferta especial</p>
+              <p className="text-3xl font-bold text-[#B89B7A]">R$ 39,00</p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => window.location.href = 'https://pay.hotmart.com/W98977034C?checkoutMode=10&bid=1744967466912'}
+            className="w-full max-w-xl mx-auto bg-[#B89B7A] text-white py-3 px-4 rounded-md text-lg font-medium hover:bg-[#A38A69] transition-colors"
+          >
+            Quero meu Guia + Bônus por R$39,00
+          </button>
+          <p className="text-sm text-[#B89B7A] mt-4">
+            ⏳ Oferta válida apenas nesta página
+          </p>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl font-bold mb-4 text-center text-[#B89B7A]">
+            O que está incluído no seu guia
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-[#faf7f5] p-4 rounded-lg">
+              <h3 className="font-medium mb-2">✓ Guia de Estilo Completo</h3>
+              <p className="text-sm">
+                Um guia personalizado baseado no seu estilo predominante com todas as dicas, estratégias e combinações.
+              </p>
+            </div>
+            <div className="bg-[#faf7f5] p-4 rounded-lg">
+              <h3 className="font-medium mb-2">✓ Bônus: Mini Guia de Visagismo</h3>
+              <p className="text-sm">
+                Aprenda a alinhar seu cabelo, maquiagem e acessórios com sua personalidade visual.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

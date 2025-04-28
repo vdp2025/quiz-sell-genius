@@ -1,23 +1,11 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuizContext } from '../context/QuizContext';
 import { UserResponse } from '@/types/quiz';
-import { toast } from './ui/use-toast';
-import { QuizContainer } from './quiz/QuizContainer';
-import { QuizContent } from './quiz/QuizContent';
-import { QuizTransitionManager } from './quiz/QuizTransitionManager';
-import { QuizNavigation } from './navigation/QuizNavigation';
-import { strategicQuestions } from '@/data/strategicQuestions';
+import { QuizQuestion } from './QuizQuestion';
+import { Progress } from './ui/progress';
 
 const QuizPage: React.FC = () => {
-  // State declarations
-  const [showingStrategicQuestions, setShowingStrategicQuestions] = useState(false);
-  const [showingTransition, setShowingTransition] = useState(false);
-  const [showingFinalTransition, setShowingFinalTransition] = useState(false);
-  const [currentStrategicQuestionIndex, setCurrentStrategicQuestionIndex] = useState(0);
-  const [strategicAnswers, setStrategicAnswers] = useState<Record<string, string[]>>({});
-
-  // Get quiz logic functions from context
   const {
     currentQuestion,
     currentQuestionIndex,
@@ -27,139 +15,47 @@ const QuizPage: React.FC = () => {
     handleNext,
     handlePrevious,
     totalQuestions,
-    calculateResults,
-    handleStrategicAnswer: saveStrategicAnswer,
-    submitQuizIfComplete
+    calculateResults
   } = useQuizContext();
 
-  // Handle strategic answer
-  const handleStrategicAnswer = (response: UserResponse) => {
-    try {
-      console.log('Strategic Answer Received:', response);
-      setStrategicAnswers(prev => ({
-        ...prev,
-        [response.questionId]: response.selectedOptions
-      }));
-      
-      saveStrategicAnswer(response.questionId, response.selectedOptions);
-      
-      if (currentStrategicQuestionIndex === strategicQuestions.length - 1) {
-        setTimeout(() => {
-          setShowingFinalTransition(true);
-        }, 500);
-      } else {
-        setTimeout(() => {
-          setCurrentStrategicQuestionIndex(prev => prev + 1);
-        }, 500);
-      }
-    } catch (error) {
-      console.error('Error processing strategic answer:', error);
-      toast({
-        title: "Erro no processamento da resposta",
-        description: "Não foi possível processar sua resposta. Por favor, tente novamente.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  // Function wrapper to adapt response
-  const handleQuizAnswer = (response: UserResponse) => {
+  const handleAnswerSubmit = (response: UserResponse) => {
     handleAnswer(response.questionId, response.selectedOptions);
   };
 
-  // Handle answer submission
-  const handleAnswerSubmit = (response: UserResponse) => {
-    try {
-      handleAnswer(response.questionId, response.selectedOptions);
-      
-      if (response.selectedOptions.length === currentQuestion.multiSelect) {
-        if (!isLastQuestion) {
-          setTimeout(() => {
-            handleNext();
-          }, 500);
-        } else {
-          console.log('Last question reached, showing transition...');
-          setTimeout(() => {
-            calculateResults();
-            setShowingTransition(true);
-          }, 800);
-        }
-      }
-    } catch (error) {
-      console.error('Error submitting answer:', error);
-      toast({
-        title: "Erro na submissão da resposta",
-        description: "Não foi possível processar sua resposta. Por favor, tente novamente.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  // Handle showing result
-  const handleShowResult = () => {
-    try {
-      const results = submitQuizIfComplete();
-      console.log('Final results being saved:', results);
-      
-      localStorage.setItem('strategicAnswers', JSON.stringify(strategicAnswers));
-      
-      setTimeout(() => {
-        console.log('Navigating to /resultado page...');
-        window.location.href = '/resultado';
-      }, 500);
-    } catch (error) {
-      console.error('Error showing result:', error);
-      toast({
-        title: "Erro ao mostrar resultado",
-        description: "Não foi possível carregar o resultado. Por favor, tente novamente.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  // Handle next click
   const handleNextClick = () => {
-    if (!isLastQuestion) {
-      handleNext();
+    if (isLastQuestion) {
+      const results = calculateResults();
+      console.log('Quiz completed. Results:', results);
+      localStorage.setItem('quizResult', JSON.stringify(results));
+      window.location.href = '/resultado';
     } else {
-      calculateResults();
-      setShowingTransition(true);
+      handleNext();
     }
   };
+
+  const progressPercentage = ((currentQuestionIndex + 1) / totalQuestions) * 100;
 
   return (
-    <QuizContainer>
-      <QuizTransitionManager
-        showingTransition={showingTransition}
-        showingFinalTransition={showingFinalTransition}
-        handleStrategicAnswer={handleStrategicAnswer}
-        strategicAnswers={strategicAnswers}
-        handleShowResult={handleShowResult}
-      />
-
-      {!showingTransition && !showingFinalTransition && (
-        <>
-          <QuizContent
-            currentQuestionIndex={currentQuestionIndex}
-            totalQuestions={totalQuestions}
-            showingStrategicQuestions={showingStrategicQuestions}
-            currentStrategicQuestionIndex={currentStrategicQuestionIndex}
-            currentQuestion={currentQuestion}
-            currentAnswers={currentAnswers}
-            handleAnswerSubmit={handleQuizAnswer}
-            handleNextClick={handleNextClick}
-            handlePrevious={handlePrevious}
-          />
-          
-          <QuizNavigation
-            currentStep={currentQuestionIndex + 1}
-            totalSteps={totalQuestions}
-            onNext={handleNextClick}
-            onPrevious={handlePrevious}
-          />
-        </>
-      )}
-    </QuizContainer>
+    <div className="min-h-screen bg-[#FAF9F7] flex items-center justify-center">
+      <div className="w-full max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
+        <div className="mb-6">
+          <div className="flex justify-between text-sm text-[#1A1818]/70 mb-1">
+            <span>Pergunta {currentQuestionIndex + 1} de {totalQuestions}</span>
+            <span>{Math.round(progressPercentage)}%</span>
+          </div>
+          <Progress value={progressPercentage} className="h-2" />
+        </div>
+        
+        <QuizQuestion
+          question={currentQuestion}
+          onAnswer={handleAnswerSubmit}
+          currentAnswers={currentAnswers || []}
+          onNextClick={handleNextClick}
+          onPreviousClick={currentQuestionIndex > 0 ? handlePrevious : undefined}
+          showQuestionImage={true}
+        />
+      </div>
+    </div>
   );
 };
 

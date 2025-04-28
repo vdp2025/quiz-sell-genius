@@ -16,12 +16,15 @@ export interface QuizOption {
   text: string;
   styleCategory: StyleResult['category'];
   imageUrl?: string;
+  points?: number;
 }
 
 export interface QuizQuestion {
   id: string;
   title: string;
-  question: string;
+  question?: string;
+  text?: string;
+  type?: 'text' | 'image' | 'both';
   options: QuizOption[];
   multiSelect: number;
   imageUrl?: string;

@@ -1,56 +1,53 @@
 
-export const styleConfig: Record<string, {
-  description: string;
+interface StyleInfo {
   image: string;
   guideImage: string;
-  color: string;
-}> = {
+  description: string;
+}
+
+interface StyleConfig {
+  [key: string]: StyleInfo;
+}
+
+export const styleConfig: StyleConfig = {
   'Natural': {
-    description: 'Você valoriza o conforto e a praticidade, com um visual descontraído e autêntico.',
-    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744920983/Espanhol_Portugu%C3%AAs_8_cgrhuw.webp',
-    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744911666/C%C3%B3pia_de_Template_Dossi%C3%AA_Completo_2024_15_-_Copia_ssrhu3.webp',
-    color: '#B8A76A'
+    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745071344/GUIA_NATURAL_fzp6fc.webp',
+    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745071347/MOCKUP_TABLETE_-_GUIA_DE_IMAGEM_E_ESTILO_ncctzi.webp',
+    description: 'Você valoriza o conforto e a praticidade. Seu estilo é descontraído e casual, com peças fáceis de usar no dia a dia.'
   },
   'Clássico': {
-    description: 'Você aprecia a elegância atemporal, com peças de qualidade e caimento perfeito.',
-    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744920983/Espanhol_Portugu%C3%AAs_8_cgrhuw.webp',
-    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744911666/C%C3%B3pia_de_Template_Dossi%C3%AA_Completo_2024_15_-_Copia_ssrhu3.webp',
-    color: '#526D82'
+    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745071343/GUIA_CL%C3%81SSICO_ux1yhf.webp',
+    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745071347/MOCKUP_TABLETE_-_GUIA_DE_IMAGEM_E_ESTILO_ncctzi.webp',
+    description: 'Você valoriza o equilíbrio e a tradição. Seu estilo é elegante e atemporal, com peças que não saem de moda.'
   },
   'Contemporâneo': {
-    description: 'Você busca um equilíbrio entre o clássico e o moderno, com peças práticas e atuais.',
-    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744920983/Espanhol_Portugu%C3%AAs_8_cgrhuw.webp',
-    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744911666/C%C3%B3pia_de_Template_Dossi%C3%AA_Completo_2024_15_-_Copia_ssrhu3.webp',
-    color: '#86A3B8'
+    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745071343/GUIA_CONTEMPOR%C3%82NEO_vcklxe.webp',
+    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745071347/MOCKUP_TABLETE_-_GUIA_DE_IMAGEM_E_ESTILO_ncctzi.webp',
+    description: 'Você valoriza o equilíbrio entre moda e praticidade. Seu estilo é atual e adaptativo, com peças que transitam bem entre várias ocasiões.'
   },
   'Elegante': {
-    description: 'Você tem um olhar refinado para detalhes sofisticados e peças de alta qualidade.',
-    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744920983/Espanhol_Portugu%C3%AAs_8_cgrhuw.webp',
-    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744911666/C%C3%B3pia_de_Template_Dossi%C3%AA_Completo_2024_15_-_Copia_ssrhu3.webp',
-    color: '#937DC2'
+    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745071342/GUIA_ELEGANTE_asez1q.webp',
+    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745071347/MOCKUP_TABLETE_-_GUIA_DE_IMAGEM_E_ESTILO_ncctzi.webp',
+    description: 'Você valoriza a sofisticação e o requinte. Seu estilo é refinado e imponente, com peças que exalam qualidade e status.'
   },
   'Romântico': {
-    description: 'Você valoriza a delicadeza e os detalhes femininos, com muita suavidade.',
-    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744920983/Espanhol_Portugu%C3%AAs_8_cgrhuw.webp',
-    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744911666/C%C3%B3pia_de_Template_Dossi%C3%AA_Completo_2024_15_-_Copia_ssrhu3.webp',
-    color: '#FFABE1'
+    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745071343/GUIA_ROM%C3%82NTICO_ci4hgk.webp',
+    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745071347/MOCKUP_TABLETE_-_GUIA_DE_IMAGEM_E_ESTILO_ncctzi.webp',
+    description: 'Você valoriza a delicadeza e a feminilidade. Seu estilo é suave e gracioso, com peças que transmitem leveza e romantismo.'
   },
   'Sexy': {
-    description: 'Você gosta de valorizar suas curvas e exibir sua sensualidade com confiança.',
-    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744920983/Espanhol_Portugu%C3%AAs_8_cgrhuw.webp',
-    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744911666/C%C3%B3pia_de_Template_Dossi%C3%AA_Completo_2024_15_-_Copia_ssrhu3.webp',
-    color: '#C85C5C'
+    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745071349/GUIA_SEXY_t5x2ov.webp',
+    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745071347/MOCKUP_TABLETE_-_GUIA_DE_IMAGEM_E_ESTILO_ncctzi.webp',
+    description: 'Você valoriza a sensualidade e a expressão corporal. Seu estilo é provocante e ousado, com peças que destacam suas curvas.'
   },
   'Dramático': {
-    description: 'Você tem personalidade forte e gosta de causar impacto com seu visual.',
-    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744920983/Espanhol_Portugu%C3%AAs_8_cgrhuw.webp',
-    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744911666/C%C3%B3pia_de_Template_Dossi%C3%AA_Completo_2024_15_-_Copia_ssrhu3.webp',
-    color: '#474E68'
+    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745073346/GUIA_DRAM%C3%81TICO_mpn60d.webp',
+    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745071347/MOCKUP_TABLETE_-_GUIA_DE_IMAGEM_E_ESTILO_ncctzi.webp',
+    description: 'Você valoriza o impacto visual e a originalidade. Seu estilo é marcante e poderoso, com peças estruturadas e de design diferenciado.'
   },
   'Criativo': {
-    description: 'Você aprecia a originalidade e não tem medo de ousar em combinações únicas.',
-    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744920983/Espanhol_Portugu%C3%AAs_8_cgrhuw.webp',
-    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744911666/C%C3%B3pia_de_Template_Dossi%C3%AA_Completo_2024_15_-_Copia_ssrhu3.webp',
-    color: '#F99417'
+    image: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745071342/GUIA_CRIATIVO_ntbzph.webp',
+    guideImage: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745071347/MOCKUP_TABLETE_-_GUIA_DE_IMAGEM_E_ESTILO_ncctzi.webp',
+    description: 'Você valoriza a expressão artística e a liberdade. Seu estilo é único e eclético, com peças que refletem sua personalidade multifacetada.'
   }
 };

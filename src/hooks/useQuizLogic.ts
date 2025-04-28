@@ -1,11 +1,12 @@
 
 import { useState, useCallback } from 'react';
 import { quizQuestions } from '../data/quizQuestions';
-import { QuizResult } from '@/types/quiz';
+import { QuizResult, StyleResult } from '@/types/quiz';
 
 export const useQuizLogic = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string[]>>({});
+  const [strategicAnswers, setStrategicAnswers] = useState<Record<string, string[]>>({});
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
 
@@ -16,6 +17,13 @@ export const useQuizLogic = () => {
 
   const handleAnswer = useCallback((questionId: string, selectedOptions: string[]) => {
     setAnswers(prev => ({
+      ...prev,
+      [questionId]: selectedOptions
+    }));
+  }, []);
+
+  const handleStrategicAnswer = useCallback((questionId: string, selectedOptions: string[]) => {
+    setStrategicAnswers(prev => ({
       ...prev,
       [questionId]: selectedOptions
     }));
@@ -37,7 +45,6 @@ export const useQuizLogic = () => {
   }, [currentQuestionIndex]);
 
   const calculateResults = useCallback(() => {
-    // Implementação simples para calcular os resultados
     const styleCounter = {
       'Natural': 0,
       'Clássico': 0,
@@ -51,26 +58,38 @@ export const useQuizLogic = () => {
 
     let totalSelections = 0;
 
-    // Lógica básica de contagem
+    // Lógica de contagem baseada nas respostas
     Object.entries(answers).forEach(([questionId, optionIds]) => {
-      // Aqui você implementaria a contagem real baseada nas respostas
-      totalSelections += optionIds.length;
+      const question = quizQuestions.find(q => q.id === questionId);
+      if (!question) return;
+
+      optionIds.forEach(optionId => {
+        const option = question.options.find(o => o.id === optionId);
+        if (option && option.styleCategory) {
+          styleCounter[option.styleCategory]++;
+          totalSelections++;
+        }
+      });
     });
 
-    // Criar objeto de resultado
+    console.log('Style counts:', styleCounter);
+    console.log('Total selections:', totalSelections);
+
+    // Calcular resultados
+    const styleResults: StyleResult[] = Object.entries(styleCounter)
+      .map(([category, score]) => ({
+        category: category as StyleResult['category'],
+        score,
+        percentage: totalSelections > 0 ? Math.round((score / totalSelections) * 100) : 0
+      }))
+      .sort((a, b) => b.score - a.score);
+
+    const primaryStyle = styleResults[0];
+    const secondaryStyles = styleResults.slice(1);
+
     const result = {
-      primaryStyle: {
-        category: 'Contemporâneo',
-        score: 10,
-        percentage: 40
-      },
-      secondaryStyles: [
-        {
-          category: 'Elegante',
-          score: 8,
-          percentage: 30
-        }
-      ],
+      primaryStyle,
+      secondaryStyles,
       totalSelections
     };
 
@@ -78,6 +97,19 @@ export const useQuizLogic = () => {
     localStorage.setItem('quizResult', JSON.stringify(result));
     return result;
   }, [answers]);
+
+  const submitQuizIfComplete = useCallback(() => {
+    // Calcular resultados finais
+    const results = calculateResults();
+    setQuizCompleted(true);
+    
+    // Salvar no localStorage
+    localStorage.setItem('quizResult', JSON.stringify(results));
+    localStorage.setItem('strategicAnswers', JSON.stringify(strategicAnswers));
+    console.log('Results saved to localStorage:', results);
+    
+    return results;
+  }, [calculateResults, strategicAnswers]);
 
   return {
     currentQuestion,
@@ -90,6 +122,9 @@ export const useQuizLogic = () => {
     handleNext,
     handlePrevious,
     totalQuestions,
-    calculateResults
+    calculateResults,
+    strategicAnswers,
+    handleStrategicAnswer,
+    submitQuizIfComplete
   };
 };

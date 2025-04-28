@@ -1,5 +1,7 @@
 
-export const quizQuestions = [
+import { QuizQuestion } from '@/types/quiz';
+
+export const quizQuestions: QuizQuestion[] = [
   {
     id: 'q1',
     title: 'QUAL O SEU TIPO DE ROUPA FAVORITA?',
@@ -46,7 +48,8 @@ export const quizQuestions = [
         styleCategory: 'Criativo'
       }
     ],
-    multiSelect: 3
+    multiSelect: 3,
+    type: 'text'
   },
   {
     id: 'q2',
@@ -94,6 +97,113 @@ export const quizQuestions = [
         styleCategory: 'Criativo'
       }
     ],
-    multiSelect: 3
+    multiSelect: 3,
+    type: 'text'
+  },
+  {
+    id: 'q3',
+    title: 'QUAL VISUAL VOCÊ MAIS SE IDENTIFICA?',
+    question: 'Selecione 3 opções que mais combinam com seu estilo visual',
+    options: [
+      {
+        id: 'q3_a',
+        text: 'Visual leve, despojado e natural.',
+        styleCategory: 'Natural',
+        imageUrl: '/lovable-uploads/24f7dc2c-ab37-41ba-a154-786b0626ae04.png'
+      },
+      {
+        id: 'q3_b',
+        text: 'Visual clássico e tradicional.',
+        styleCategory: 'Clássico',
+        imageUrl: '/lovable-uploads/0fb54364-9c71-4373-b6e7-500e6f9a2732.png'
+      },
+      {
+        id: 'q3_c',
+        text: 'Visual casual com toque atual.',
+        styleCategory: 'Contemporâneo',
+        imageUrl: '/lovable-uploads/22d18ed7-b1fc-4fb4-9538-f0ab93fe5c75.png'
+      },
+      {
+        id: 'q3_d',
+        text: 'Visual refinado e imponente.',
+        styleCategory: 'Elegante',
+        imageUrl: '/lovable-uploads/e779494d-0c8d-408d-b034-1964a3b76469.png'
+      },
+      {
+        id: 'q3_e',
+        text: 'Visual romântico, feminino e delicado.',
+        styleCategory: 'Romântico',
+        imageUrl: '/lovable-uploads/94638e1c-0180-4cfd-80be-26db97a1e58f.png'
+      },
+      {
+        id: 'q3_f',
+        text: 'Visual sensual, com saia justa e decote.',
+        styleCategory: 'Sexy',
+        imageUrl: '/lovable-uploads/919b184d-940d-4a4f-b53c-36792cbd6114.png'
+      },
+      {
+        id: 'q3_g',
+        text: 'Visual marcante e urbano (jeans + jaqueta).',
+        styleCategory: 'Dramático',
+        imageUrl: '/lovable-uploads/84341867-0bff-402e-a89f-be5747b706ba.png'
+      },
+      {
+        id: 'q3_h',
+        text: 'Visual criativo, colorido e ousado.',
+        styleCategory: 'Criativo',
+        imageUrl: '/lovable-uploads/d633e490-d0f2-4429-998e-bceeeda790f8.png'
+      }
+    ],
+    multiSelect: 3,
+    type: 'both'
+  },
+  {
+    id: 'q4',
+    title: 'QUAIS ESTAMPAS VOCÊ MAIS SE IDENTIFICA?',
+    question: 'Selecione 3 opções que mais combinam com seu estilo',
+    options: [
+      {
+        id: 'q4_a',
+        text: 'Estampas clean, com poucas informações.',
+        styleCategory: 'Natural'
+      },
+      {
+        id: 'q4_b',
+        text: 'Estampas clássicas e atemporais.',
+        styleCategory: 'Clássico'
+      },
+      {
+        id: 'q4_c',
+        text: 'Atemporais, mas que tenham uma pegada de atual e moderna.',
+        styleCategory: 'Contemporâneo'
+      },
+      {
+        id: 'q4_d',
+        text: 'Estampas clássicas e atemporais, mas sofisticadas.',
+        styleCategory: 'Elegante'
+      },
+      {
+        id: 'q4_e',
+        text: 'Estampas florais e/ou delicadas como bolinhas, borboletas e corações.',
+        styleCategory: 'Romântico'
+      },
+      {
+        id: 'q4_f',
+        text: 'Estampas de animal print, como onça, zebra e cobra.',
+        styleCategory: 'Sexy'
+      },
+      {
+        id: 'q4_g',
+        text: 'Estampas geométricas, abstratas e exageradas como grandes poás.',
+        styleCategory: 'Dramático'
+      },
+      {
+        id: 'q4_h',
+        text: 'Estampas diferentes do usual, como africanas, xadrez grandes.',
+        styleCategory: 'Criativo'
+      }
+    ],
+    multiSelect: 3,
+    type: 'text'
   }
 ];
