@@ -4,7 +4,7 @@ import React from 'react';
 interface SingleChoiceComponentProps {
   data: {
     question?: string;
-    options?: Array<{
+    options?: string[] | Array<{
       text: string;
       value: string;
       imageUrl?: string;
@@ -35,13 +35,25 @@ const SingleChoiceComponent: React.FC<SingleChoiceComponentProps> = ({
     4: 'grid-cols-2 md:grid-cols-4',
   }[columns] || 'grid-cols-1';
 
+  // Process options to handle both string[] and object[] formats
+  const processedOptions = options.map((option, index) => {
+    if (typeof option === 'string') {
+      return {
+        text: option,
+        value: String(index),
+        imageUrl: undefined
+      };
+    }
+    return option;
+  });
+
   return (
     <div className="py-4">
       {data.question && (
         <h3 className="text-lg font-medium mb-4">{data.question}</h3>
       )}
       <div className={`grid ${columnClass} gap-4`}>
-        {options.map((option, index) => (
+        {processedOptions.map((option, index) => (
           <div
             key={index}
             className={`border rounded-lg p-4 cursor-pointer transition-colors ${
