@@ -1,10 +1,10 @@
+
 import { QuizQuestion } from '../../types/quiz';
 
 export const selfPerceptionQuestions: QuizQuestion[] = [
   {
     id: 'strategic-1',
     title: 'Como você se vê hoje?\nQuando você se olha no espelho, como se sente com sua imagem pessoal atualmente?',
-    text: 'Como você se vê hoje?\nQuando você se olha no espelho, como se sente com sua imagem pessoal atualmente?',
     type: 'text',
     multiSelect: 1,
     imageUrl: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745195432/woman-mirror-reflection_webp.webp',
@@ -30,7 +30,6 @@ export const selfPerceptionQuestions: QuizQuestion[] = [
   {
     id: 'strategic-2',
     title: 'O que mais te desafia na hora de se vestir?',
-    text: 'O que mais te desafia na hora de se vestir?',
     type: 'text',
     multiSelect: 1,
     imageUrl: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745195436/wardrobe-organization_webp.webp',

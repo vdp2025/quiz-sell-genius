@@ -9,13 +9,9 @@ const Index = () => {
   const { startQuiz } = useQuizContext();
 
   const handleStart = async (name: string) => {
-    try {
-      await startQuiz(name, 'default-quiz');
-      localStorage.setItem('userName', name);
-      setStarted(true);
-    } catch (error) {
-      console.error('Error starting quiz:', error);
-    }
+    setStarted(true);
+    console.log(`Quiz started by ${name}`);
+    localStorage.setItem('userName', name);
   };
 
   return (

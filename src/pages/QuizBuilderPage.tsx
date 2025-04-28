@@ -1,11 +1,9 @@
 
 import React from 'react';
-import QuizAdminPanel from '../components/admin/QuizAdminPanel';
+import EnhancedQuizBuilder from '@/components/quiz-builder/EnhancedQuizBuilder';
 
-export default function QuizBuilderPage() {
-  return (
-    <div className="min-h-screen bg-[#FAF9F7]">
-      <QuizAdminPanel />
-    </div>
-  );
-}
+const QuizBuilderPage: React.FC = () => {
+  return <EnhancedQuizBuilder />;
+};
+
+export default QuizBuilderPage;

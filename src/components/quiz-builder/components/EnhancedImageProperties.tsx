@@ -1,130 +1,134 @@
 
-import React from 'react';
-import { Input } from '@/components/ui/input';
+import React, { useState } from 'react';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card } from '@/components/ui/card';
+import { Image, Upload } from 'lucide-react';
 
 interface EnhancedImagePropertiesProps {
-  imageUrl?: string;
-  altText?: string;
-  borderRadius?: 'none' | 'small' | 'medium' | 'large';
-  maxWidth?: string;
-  aspectRatio?: string;
-  onUpdate: (updates: any) => void;
-  data?: any; // Added to accept the data prop structure
+  data: any;
+  onUpdate: (data: any) => void;
 }
 
-const EnhancedImageProperties: React.FC<EnhancedImagePropertiesProps> = ({
-  imageUrl = '',
-  altText = '',
-  borderRadius = 'none',
-  maxWidth = '100%',
-  aspectRatio = 'auto',
-  onUpdate,
-  data, // Added to accept the data prop
-}) => {
-  // If data is provided, use it instead of individual props
-  const effectiveImageUrl = data?.imageUrl || imageUrl;
-  const effectiveAltText = data?.altText || data?.alt || altText;
-  const effectiveBorderRadius = data?.borderRadius || borderRadius;
-  const effectiveMaxWidth = data?.maxWidth || maxWidth;
-  const effectiveAspectRatio = data?.aspectRatio || aspectRatio;
-
-  const handleUpdate = (updates: any) => {
-    if (data) {
-      // If data is provided, update the data object
-      onUpdate({
-        ...data,
-        ...updates
-      });
-    } else {
-      // Caso contrário, atualizar como antes
-      onUpdate(updates);
-    }
-  };
-
-  const handleImageUpload = () => {
-    // In a real implementation, this would open a file picker
-    console.log('Image upload functionality would be implemented here');
-  };
+const EnhancedImageProperties: React.FC<EnhancedImagePropertiesProps> = ({ data, onUpdate }) => {
+  const [activeTab, setActiveTab] = useState('url');
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="imageUrl">URL da Imagem</Label>
-        <Input
-          id="imageUrl"
-          value={effectiveImageUrl}
-          onChange={(e) => handleUpdate({ imageUrl: e.target.value })}
-          placeholder="https://exemplo.com/imagem.jpg"
+        <Label>Fonte da Imagem</Label>
+        <Tabs defaultValue="url" onValueChange={setActiveTab}>
+          <TabsList className="w-full">
+            <TabsTrigger value="url" className="flex-1">URL</TabsTrigger>
+            <TabsTrigger value="upload" className="flex-1">Upload</TabsTrigger>
+            <TabsTrigger value="gallery" className="flex-1">Galeria</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="url" className="pt-4">
+            <div className="space-y-2">
+              <Label>URL da Imagem</Label>
+              <Input 
+                type="text"
+                value={data.imageUrl || ''} 
+                onChange={(e) => onUpdate({ 
+                  ...data, 
+                  imageUrl: e.target.value 
+                })}
+                placeholder="https://exemplo.com/imagem.jpg"
+              />
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="upload" className="pt-4">
+            <Card className="border border-dashed p-6 text-center">
+              <div className="flex flex-col items-center gap-2">
+                <Upload className="h-8 w-8 text-gray-400" />
+                <p className="text-sm text-gray-500">Arraste uma imagem ou clique para fazer upload</p>
+                <Button className="mt-2" size="sm">
+                  Selecionar arquivo
+                </Button>
+              </div>
+              <Input 
+                type="file" 
+                accept="image/*" 
+                className="hidden" 
+                id="image-upload"
+                onChange={(e) => {
+                  // Implementar lógica de upload
+                  console.log("Implementar lógica de upload", e.target.files);
+                }}
+              />
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="gallery" className="pt-4">
+            <div className="grid grid-cols-3 gap-2">
+              {/* Exemplo de imagens da galeria */}
+              {[1,2,3,4,5,6].map((i) => (
+                <div 
+                  key={i} 
+                  className="aspect-square bg-gray-100 rounded-md flex items-center justify-center cursor-pointer hover:bg-gray-200"
+                  onClick={() => onUpdate({
+                    ...data,
+                    imageUrl: `https://placehold.co/300x300?text=Image+${i}`
+                  })}
+                >
+                  <Image className="h-6 w-6 text-gray-400" />
+                </div>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      {data.imageUrl && activeTab === 'url' && (
+        <div className="border rounded-md p-4">
+          <img 
+            src={data.imageUrl} 
+            alt="Preview" 
+            className="max-h-40 mx-auto object-contain"
+            onError={(e) => {
+              e.currentTarget.src = "https://placehold.co/300x300?text=Error+loading+image";
+            }}
+          />
+        </div>
+      )}
+      
+      <div className="space-y-2">
+        <Label>Texto Alternativo</Label>
+        <Input 
+          value={data.alt || ''} 
+          onChange={(e) => onUpdate({ 
+            ...data, 
+            alt: e.target.value 
+          })}
+          placeholder="Descrição da imagem para acessibilidade"
         />
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="altText">Texto Alternativo</Label>
-        <Input
-          id="altText"
-          value={effectiveAltText}
-          onChange={(e) => handleUpdate({ altText: e.target.value, alt: e.target.value })}
-          placeholder="Descrição da imagem"
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="borderRadius">Borda Arredondada</Label>
+        <Label>Tamanho da Imagem</Label>
         <Select 
-          value={effectiveBorderRadius}
-          onValueChange={(value) => handleUpdate({ borderRadius: value })}
+          value={data.imageSize || 'medium'} 
+          onValueChange={(value) => onUpdate({ 
+            ...data, 
+            imageSize: value 
+          })}
         >
-          <SelectTrigger id="borderRadius">
-            <SelectValue placeholder="Selecione" />
+          <SelectTrigger>
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="none">Sem arredondamento</SelectItem>
             <SelectItem value="small">Pequeno</SelectItem>
             <SelectItem value="medium">Médio</SelectItem>
             <SelectItem value="large">Grande</SelectItem>
+            <SelectItem value="full">Largura Total</SelectItem>
           </SelectContent>
         </Select>
       </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="maxWidth">Largura Máxima</Label>
-        <Input
-          id="maxWidth"
-          value={effectiveMaxWidth}
-          onChange={(e) => handleUpdate({ maxWidth: e.target.value })}
-          placeholder="100%, 500px, etc."
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="aspectRatio">Proporção</Label>
-        <Select 
-          value={effectiveAspectRatio}
-          onValueChange={(value) => handleUpdate({ aspectRatio: value })}
-        >
-          <SelectTrigger id="aspectRatio">
-            <SelectValue placeholder="Selecione" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="auto">Original</SelectItem>
-            <SelectItem value="1/1">Quadrado (1:1)</SelectItem>
-            <SelectItem value="16/9">Widescreen (16:9)</SelectItem>
-            <SelectItem value="4/3">Standard (4:3)</SelectItem>
-            <SelectItem value="3/2">Cartão postal (3:2)</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      
-      <Button 
-        variant="outline" 
-        onClick={handleImageUpload}
-        className="w-full"
-      >
-        Escolher Imagem
-      </Button>
     </div>
   );
 };

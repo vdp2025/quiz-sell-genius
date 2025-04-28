@@ -1,32 +1,53 @@
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { quizQuestions } from '../data/quizQuestions';
-import { QuizResult, StyleResult } from '@/types/quiz';
+import { QuizResult, StyleResult } from '../types/quiz';
 
 export const useQuizLogic = () => {
+  // 1. State declarations (all at the top)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string[]>>({});
-  const [strategicAnswers, setStrategicAnswers] = useState<Record<string, string[]>>({});
+  const [strategicAnswers, setStrategicAnswers] = useState<Record<string, string[]>>(() => {
+    const savedAnswers = localStorage.getItem('strategicAnswers');
+    return savedAnswers ? JSON.parse(savedAnswers) : {};
+  });
   const [quizCompleted, setQuizCompleted] = useState(false);
-  const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
+  const [quizResult, setQuizResult] = useState<QuizResult | null>(() => {
+    const savedResult = localStorage.getItem('quizResult');
+    return savedResult ? JSON.parse(savedResult) : null;
+  });
 
+  // 2. Computed values
   const currentQuestion = quizQuestions[currentQuestionIndex];
   const currentAnswers = answers[currentQuestion?.id] || [];
+  const canProceed = currentAnswers.length === (currentQuestion?.multiSelect || 0);
   const isLastQuestion = currentQuestionIndex === quizQuestions.length - 1;
   const totalQuestions = quizQuestions.length;
 
+  // 3. Simple utility functions that don't depend on other functions
   const handleAnswer = useCallback((questionId: string, selectedOptions: string[]) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: selectedOptions
-    }));
+    setAnswers(prev => {
+      const newAnswers = {
+        ...prev,
+        [questionId]: selectedOptions
+      };
+      console.log(`Question ${questionId} answered with options:`, selectedOptions);
+      return newAnswers;
+    });
   }, []);
 
   const handleStrategicAnswer = useCallback((questionId: string, selectedOptions: string[]) => {
-    setStrategicAnswers(prev => ({
-      ...prev,
-      [questionId]: selectedOptions
-    }));
+    setStrategicAnswers(prev => {
+      const newAnswers = {
+        ...prev,
+        [questionId]: selectedOptions
+      };
+      localStorage.setItem('strategicAnswers', JSON.stringify({
+        ...prev,
+        [questionId]: selectedOptions
+      }));
+      return newAnswers;
+    });
   }, []);
 
   const handlePrevious = useCallback(() => {
@@ -35,17 +56,20 @@ export const useQuizLogic = () => {
     }
   }, [currentQuestionIndex]);
 
-  const handleNext = useCallback(() => {
-    if (currentQuestionIndex < quizQuestions.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
-    } else {
-      calculateResults();
-      setQuizCompleted(true);
-    }
-  }, [currentQuestionIndex]);
+  const resetQuiz = useCallback(() => {
+    setCurrentQuestionIndex(0);
+    setAnswers({});
+    setQuizCompleted(false);
+    setQuizResult(null);
+    localStorage.removeItem('quizResult');
+    localStorage.removeItem('strategicAnswers');
+    setStrategicAnswers({});
+    console.log('Quiz reset');
+  }, []);
 
+  // 4. Complex function that others depend on
   const calculateResults = useCallback(() => {
-    const styleCounter = {
+    const styleCounter: Record<string, number> = {
       'Natural': 0,
       'Clássico': 0,
       'Contemporâneo': 0,
@@ -58,14 +82,14 @@ export const useQuizLogic = () => {
 
     let totalSelections = 0;
 
-    // Lógica de contagem baseada nas respostas
+    // Garantir que todas as respostas sejam contabilizadas
     Object.entries(answers).forEach(([questionId, optionIds]) => {
       const question = quizQuestions.find(q => q.id === questionId);
       if (!question) return;
 
       optionIds.forEach(optionId => {
         const option = question.options.find(o => o.id === optionId);
-        if (option && option.styleCategory) {
+        if (option) {
           styleCounter[option.styleCategory]++;
           totalSelections++;
         }
@@ -94,37 +118,70 @@ export const useQuizLogic = () => {
     };
 
     setQuizResult(result);
+    // Save to localStorage immediately
     localStorage.setItem('quizResult', JSON.stringify(result));
+    // Also save strategic answers
+    localStorage.setItem('strategicAnswers', JSON.stringify(strategicAnswers));
+    console.log('Results calculated and saved to localStorage:', result);
+
     return result;
-  }, [answers]);
+  }, [answers, strategicAnswers]);
+
+  // 5. Functions that depend on other complex functions
+  const handleNext = useCallback(() => {
+    if (currentQuestionIndex < quizQuestions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+    } else {
+      calculateResults();
+      setQuizCompleted(true);
+    }
+  }, [currentQuestionIndex, calculateResults, quizQuestions.length]);
 
   const submitQuizIfComplete = useCallback(() => {
-    // Calcular resultados finais
+    // Calculate final results
     const results = calculateResults();
     setQuizCompleted(true);
     
-    // Salvar no localStorage
+    // Save everything to localStorage before navigating
     localStorage.setItem('quizResult', JSON.stringify(results));
     localStorage.setItem('strategicAnswers', JSON.stringify(strategicAnswers));
-    console.log('Results saved to localStorage:', results);
+    console.log('Results saved to localStorage before redirect:', results);
     
     return results;
   }, [calculateResults, strategicAnswers]);
 
+  // 6. Side effects
+  useEffect(() => {
+    if (quizResult) {
+      localStorage.setItem('quizResult', JSON.stringify(quizResult));
+      console.log('QuizResult saved to localStorage:', quizResult);
+    }
+  }, [quizResult]);
+
+  useEffect(() => {
+    if (Object.keys(strategicAnswers).length > 0) {
+      localStorage.setItem('strategicAnswers', JSON.stringify(strategicAnswers));
+      console.log('Strategic answers saved to localStorage:', strategicAnswers);
+    }
+  }, [strategicAnswers]);
+
+  // 7. Return all needed functions and values
   return {
     currentQuestion,
     currentQuestionIndex,
     currentAnswers,
+    canProceed,
     isLastQuestion,
     quizCompleted,
     quizResult,
     handleAnswer,
     handleNext,
     handlePrevious,
-    totalQuestions,
+    resetQuiz,
+    submitQuizIfComplete,
     calculateResults,
+    totalQuestions,
     strategicAnswers,
-    handleStrategicAnswer,
-    submitQuizIfComplete
+    handleStrategicAnswer
   };
 };

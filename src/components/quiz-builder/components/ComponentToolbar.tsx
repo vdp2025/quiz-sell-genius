@@ -1,68 +1,78 @@
 
 import React from 'react';
+import { QuizStage, QuizComponentType } from '@/types/quizBuilder';
 import { Button } from '@/components/ui/button';
-import { FileText, Image, Type, AlignLeft, CheckSquare, SquareStack, Clock, Eye, EyeOff } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Eye, EyeOff, Heading, Text, Image, ListOrdered, CheckCircle, LayoutGrid } from 'lucide-react';
 
 interface ComponentToolbarProps {
-  activeStage: any | null;
+  activeStage: QuizStage | null;
   onComponentSelect: (type: string) => void;
   isPreviewing: boolean;
-  onTogglePreview?: () => void;
 }
 
-const ComponentToolbar: React.FC<ComponentToolbarProps> = ({
+export const ComponentToolbar: React.FC<ComponentToolbarProps> = ({
   activeStage,
   onComponentSelect,
-  isPreviewing,
-  onTogglePreview
+  isPreviewing
 }) => {
-  const components = [
-    { type: 'header', label: 'Cabeçalho', icon: <Type className="w-4 h-4" /> },
-    { type: 'text', label: 'Texto', icon: <AlignLeft className="w-4 h-4" /> },
-    { type: 'image', label: 'Imagem', icon: <Image className="w-4 h-4" /> },
-    { type: 'multipleChoice', label: 'Múltipla Escolha', icon: <CheckSquare className="w-4 h-4" /> },
-    { type: 'singleChoice', label: 'Escolha Única', icon: <SquareStack className="w-4 h-4" /> },
-    { type: 'countdown', label: 'Contagem', icon: <Clock className="w-4 h-4" /> }
+  if (!activeStage) {
+    return (
+      <div className="border-b bg-white p-3 flex items-center justify-between opacity-50">
+        <div className="flex items-center space-x-2">
+          <p className="text-sm text-gray-500">Selecione uma etapa para adicionar componentes</p>
+        </div>
+      </div>
+    );
+  }
+
+  const componentTypes: { type: QuizComponentType; label: string; icon: React.ElementType }[] = [
+    { type: 'header', label: 'Cabeçalho', icon: Heading },
+    { type: 'text', label: 'Texto', icon: Text },
+    { type: 'image', label: 'Imagem', icon: Image },
+    { type: 'multipleChoice', label: 'Múltipla Escolha', icon: ListOrdered },
+    { type: 'singleChoice', label: 'Escolha Única', icon: CheckCircle },
+    { type: 'columns', label: 'Colunas', icon: LayoutGrid },
   ];
 
   return (
-    <div className="p-3 bg-white border-b flex justify-between items-center">
-      <div className="flex space-x-2">
-        {activeStage && components.map((component) => (
-          <Button
-            key={component.type}
-            variant="outline"
-            size="sm"
-            className="flex items-center space-x-1"
-            onClick={() => onComponentSelect(component.type)}
-            disabled={isPreviewing}
-          >
-            {component.icon}
-            <span className="text-xs">{component.label}</span>
-          </Button>
+    <div className="border-b bg-white p-3 flex items-center justify-between">
+      <div className="flex items-center space-x-2">
+        {!isPreviewing && componentTypes.map((component) => (
+          <Tooltip key={component.type}>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                onClick={() => onComponentSelect(component.type)}
+              >
+                <component.icon className="w-4 h-4 mr-1" />
+                {component.label}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Adicionar {component.label}</p>
+            </TooltipContent>
+          </Tooltip>
         ))}
       </div>
       
-      <Button
-        variant="ghost"
-        size="sm"
-        className="flex items-center space-x-1"
-        onClick={onTogglePreview}
-      >
-        {isPreviewing ? (
-          <>
-            <EyeOff className="w-4 h-4" />
-            <span className="text-xs">Editar</span>
-          </>
-        ) : (
-          <>
-            <Eye className="w-4 h-4" />
-            <span className="text-xs">Visualizar</span>
-          </>
-        )}
-      </Button>
+      <div className="flex items-center">
+        <Button variant="ghost" size="sm" className="text-gray-500">
+          {isPreviewing ? (
+            <>
+              <EyeOff className="w-4 h-4 mr-1" />
+              <span>Editando</span>
+            </>
+          ) : (
+            <>
+              <Eye className="w-4 h-4 mr-1" />
+              <span>Visualizando</span>
+            </>
+          )}
+        </Button>
+      </div>
     </div>
   );
 };
-
-export default ComponentToolbar;

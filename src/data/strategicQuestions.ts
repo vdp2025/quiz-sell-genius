@@ -1,23 +1,16 @@
 
-export const strategicQuestions = [
-  {
-    id: 'strategic_q1',
-    title: 'Em qual área da sua vida você mais deseja melhorar a sua imagem?',
-    options: [
-      {
-        id: 'strategic_q1_a',
-        text: 'Profissional (ambiente de trabalho)'
-      },
-      {
-        id: 'strategic_q1_b',
-        text: 'Pessoal (autoestima e autoconfiança)'
-      },
-      {
-        id: 'strategic_q1_c',
-        text: 'Social (relacionamentos e eventos)'
-      }
-    ],
-    multiSelect: 1,
-    type: 'text'
-  }
+import { QuizQuestion } from '../types/quiz';
+import { selfPerceptionQuestions } from './questions/selfPerceptionQuestions';
+import { styleExperienceQuestions } from './questions/styleExperienceQuestions';
+import { purchaseIntentQuestions } from './questions/purchaseIntentQuestions';
+import { desiredOutcomesQuestions } from './questions/desiredOutcomesQuestions';
+
+// Concatenate all strategic questions in the correct order
+export const strategicQuestions: QuizQuestion[] = [
+  ...selfPerceptionQuestions,
+  ...styleExperienceQuestions,
+  ...purchaseIntentQuestions,
+  ...desiredOutcomesQuestions
 ];
+
+console.log('Strategic questions loaded:', strategicQuestions.length);

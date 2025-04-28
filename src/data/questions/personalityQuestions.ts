@@ -1,10 +1,10 @@
+
 import { QuizQuestion } from '../../types/quiz';
 
 export const personalityQuestions: QuizQuestion[] = [
   {
     id: '2',
     title: 'RESUMA A SUA PERSONALIDADE:',
-    text: 'RESUMA A SUA PERSONALIDADE:',
     type: 'text',
     multiSelect: 3,
     options: [
