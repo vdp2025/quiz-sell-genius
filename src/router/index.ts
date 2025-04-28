@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, RouteLocationNormalized, NavigationGuardNext } from 'vue-router';
 import QuizView from '../views/QuizView.vue';
 import ResultsView from '../views/ResultsView.vue';
 import QuizQuestion from '../components/quiz-vue/QuizQuestion.vue';
@@ -67,11 +67,11 @@ const router = createRouter({
 });
 
 // Atualizar título da página e verificar autenticação
-router.beforeEach((to, from, next) => {
+router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
   document.title = to.meta.title ? `${to.meta.title} - Quiz de Estilo` : 'Quiz de Estilo';
   
   // Verificar autenticação para rotas protegidas
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.matched.some((record: RouteLocationNormalized) => record.meta.requiresAuth)) {
     // Aqui você pode adicionar sua lógica de verificação de autenticação
     // Por exemplo:
     // if (!isAuthenticated()) {
