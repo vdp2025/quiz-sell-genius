@@ -14,6 +14,7 @@ interface StyleDefinition {
   title: string;
   description: string;
   imageUrl: string;
+  guideImageUrl: string;
   characteristics: string[];
 }
 
@@ -70,6 +71,7 @@ export const useQuizStore = defineStore('quiz', {
         title: 'Romântico',
         description: 'Seu estilo é delicado e feminino, com preferência por peças suaves e detalhes graciosos.',
         imageUrl: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745193439/romantic-style.jpg',
+        guideImageUrl: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744920983/guia-romantico.webp',
         characteristics: [
           'Aprecia detalhes delicados e românticos',
           'Prefere cores suaves e pastéis',
@@ -81,6 +83,7 @@ export const useQuizStore = defineStore('quiz', {
         title: 'Clássico',
         description: 'Seu estilo é atemporal e sofisticado, com preferência por peças bem estruturadas e de qualidade.',
         imageUrl: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1745193439/classic-style.jpg',
+        guideImageUrl: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744920983/guia-classico.webp',
         characteristics: [
           'Valoriza peças atemporais',
           'Prefere cores neutras e clássicas',

@@ -1,4 +1,3 @@
-
 export interface QuizOption {
   id: string;
   text: string;
@@ -8,27 +7,48 @@ export interface QuizOption {
 }
 
 export interface QuizQuestion {
-  id: string;
-  title: string;
-  type: 'text' | 'image' | 'both';
-  multiSelect: number;
+  id: number;
+  text: string;
+  options: Array<{
+    id: string;
+    text: string;
+    imageUrl?: string;
+  }>;
+  multiSelect?: number;
+  category: string;
   imageUrl?: string;
-  options: QuizOption[];
 }
 
 export interface UserResponse {
-  questionId: string;
+  questionId: number;
+  answer: string;
   selectedOptions: string[];
 }
 
 export interface StyleResult {
-  category: 'Natural' | 'Clássico' | 'Contemporâneo' | 'Elegante' | 'Romântico' | 'Sexy' | 'Dramático' | 'Criativo';
-  score: number;
-  percentage: number;
+  category: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  characteristics: string[];
 }
 
 export interface QuizResult {
   primaryStyle: StyleResult;
   secondaryStyles: StyleResult[];
   totalSelections: number;
+}
+
+export interface QuizState {
+  userName: string;
+  currentQuestionIndex: number;
+  answers: Record<string, string[]>;
+  completed: boolean;
+  result: QuizResult | null;
+}
+
+export interface AnalyticsData {
+  eventName: string;
+  timestamp: string;
+  properties: Record<string, any>;
 }
