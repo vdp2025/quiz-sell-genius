@@ -8,6 +8,12 @@ interface ElementRendererProps {
   onClick?: () => void;
 }
 
+interface ContentObject {
+  text?: string;
+  imageUrl?: string;
+  styleCategory?: string;
+}
+
 export function ElementRenderer({ element, isSelected, isEditing, onClick }: ElementRendererProps) {
   const { type, content, properties } = element;
   
@@ -26,13 +32,26 @@ export function ElementRenderer({ element, isSelected, isEditing, onClick }: Ele
       width: styles.width,
       height: styles.height,
       boxShadow: styles.shadow,
-      position: element.position ? 'absolute' : 'relative',
+      position: element.position ? 'absolute' as const : 'relative' as const,
       top: element.position?.y ? `${element.position.y}px` : undefined,
       left: element.position?.x ? `${element.position.x}px` : undefined,
       cursor: isEditing ? 'pointer' : 'default',
       outline: isSelected ? '2px solid #3b82f6' : 'none',
       transition: 'all 0.2s ease'
     };
+  };
+  
+  // Extrai texto do conteúdo, que pode ser string ou objeto
+  const getContentText = (): string => {
+    if (!content) return '';
+    
+    if (typeof content === 'string') {
+      return content;
+    }
+    
+    // Conteúdo é um objeto
+    const contentObj = content as ContentObject;
+    return contentObj.text || '';
   };
   
   // Renderiza diferentes tipos de elementos
@@ -45,7 +64,7 @@ export function ElementRenderer({ element, isSelected, isEditing, onClick }: Ele
             className="editor-text"
             style={generateStyles()}
             onClick={onClick}
-            dangerouslySetInnerHTML={{ __html: content }}
+            dangerouslySetInnerHTML={{ __html: getContentText() }}
           />
         );
         
@@ -70,7 +89,7 @@ export function ElementRenderer({ element, isSelected, isEditing, onClick }: Ele
               if (onClick) onClick();
             }}
           >
-            {content}
+            {getContentText()}
           </button>
         );
         
@@ -81,7 +100,7 @@ export function ElementRenderer({ element, isSelected, isEditing, onClick }: Ele
             style={generateStyles()}
             onClick={onClick}
           >
-            {content}
+            {getContentText()}
           </div>
         );
         
@@ -92,7 +111,7 @@ export function ElementRenderer({ element, isSelected, isEditing, onClick }: Ele
             className="editor-result"
             style={generateStyles()}
             onClick={onClick}
-            dangerouslySetInnerHTML={{ __html: content }}
+            dangerouslySetInnerHTML={{ __html: getContentText() }}
           />
         );
         
@@ -103,7 +122,7 @@ export function ElementRenderer({ element, isSelected, isEditing, onClick }: Ele
             style={generateStyles()}
             onClick={onClick}
           >
-            {content || `Elemento: ${type}`}
+            {getContentText() || `Elemento: ${type}`}
           </div>
         );
     }
