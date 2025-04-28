@@ -112,11 +112,10 @@ export function QuizEditorPage() {
                 <p className="text-gray-500 mb-4">
                   Aqui você poderia escolher entre diferentes templates para o seu quiz.
                 </p>
-                <Button variant="outline">Explorar templates</Button>
+                <Button>Explorar templates</Button>
               </div>
             </div>
           </TabsContent>
-          
           <TabsContent value="help" className="h-full m-0 p-0">
             <div className="h-full flex items-center justify-center">
               <div className="text-center max-w-md p-4">

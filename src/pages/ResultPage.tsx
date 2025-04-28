@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuiz } from '@/hooks/useQuiz';
 import { useGlobalStyles } from '@/hooks/useGlobalStyles';
 import { Header } from '@/components/result/Header';
@@ -16,42 +16,89 @@ import GuaranteeSection from '@/components/result/GuaranteeSection';
 import ProductShowcase from '@/components/quiz-result/sales/ProductShowcase';
 import BenefitList from '@/components/quiz-result/sales/BenefitList';
 import Testimonials from '@/components/quiz-result/sales/Testimonials';
+import { StyleResult } from '@/types/quiz';
+
+// Dados de fallback caso não haja resultados disponíveis
+const DEFAULT_STYLE: StyleResult = {
+  category: 'Contemporâneo',
+  title: 'Estilo Contemporâneo',
+  description: 'O estilo Contemporâneo é caracterizado por uma abordagem moderna e versátil ao se vestir. Você valoriza peças atuais, mas sem exageros ou modismos passageiros.',
+  imageUrl: 'https://res.cloudinary.com/dqljyf76t/image/upload/v1744920983/Espanhol_Portugu%C3%AAs_8_cgrhuw.webp',
+  characteristics: ['Moderno', 'Versátil', 'Atemporal']
+};
 
 const ResultPage: React.FC = () => {
-  const { primaryStyle, secondaryStyles, quizResult } = useQuiz();
+  const [loadingState, setLoadingState] = useState<'loading' | 'loaded' | 'error'>('loading');
+  const { quizResult } = useQuiz();
   const { globalStyles } = useGlobalStyles();
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    console.log("ResultPage mounted. Quiz result:", quizResult);
+    
+    // Verificar se há resultados do quiz no localStorage ou em memória
+    try {
+      const storedResult = localStorage.getItem('quizResult');
+      
+      if (quizResult || storedResult) {
+        console.log("Quiz result loaded:", quizResult || JSON.parse(storedResult || '{}'));
+        setLoadingState('loaded');
+      } else {
+        console.log("No quiz result found");
+        setLoadingState('error');
+      }
+    } catch (error) {
+      console.error("Error loading quiz result:", error);
+      setLoadingState('error');
+    }
   }, [quizResult]);
 
-  if (!quizResult) {
-    console.log("No quiz result found, showing error state");
+  // Mostra estado de carregamento
+  if (loadingState === 'loading') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#fffaf7]">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#B89B7A] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#432818]">Carregando seu resultado...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Mostra estado de erro se não houver resultados
+  if (loadingState === 'error') {
     return <ErrorState />;
   }
 
-  const { category } = primaryStyle;
-  const { image, guideImage, description } = styleConfig[category] || {
-    image: "https://res.cloudinary.com/dqljyf76t/image/upload/v1744920983/Espanhol_Portugu%C3%AAs_8_cgrhuw.webp",
+  // Usa dados do quizResult ou valores padrão
+  const primaryStyle = quizResult?.primaryStyle || DEFAULT_STYLE;
+  
+  const secondaryStyles = quizResult?.secondaryStyles || [];
+  const category = primaryStyle.category;
+
+  // Usa dados de estilo da configuração ou valores padrão
+  const styleData = styleConfig[category] || {
+    image: primaryStyle.imageUrl || DEFAULT_STYLE.imageUrl,
     guideImage: "https://res.cloudinary.com/dqljyf76t/image/upload/v1744911666/C%C3%B3pia_de_Template_Dossi%C3%AA_Completo_2024_15_-_Copia_ssrhu3.webp",
-    description: "Descrição não disponível para este estilo."
+    description: primaryStyle.description || DEFAULT_STYLE.description
   };
+
+  // Calcular percentuais para exibição
+  const stylePercentage = 80; // Valor padrão se não existir
 
   return (
     <div
       className="min-h-screen bg-[#fffaf7]"
       style={{
-        backgroundColor: globalStyles.backgroundColor || '#fffaf7',
-        color: globalStyles.textColor || '#432818',
-        fontFamily: globalStyles.fontFamily || 'inherit',
+        backgroundColor: globalStyles?.backgroundColor || '#fffaf7',
+        color: globalStyles?.textColor || '#432818',
+        fontFamily: globalStyles?.fontFamily || 'inherit',
       }}
     >
       <Header
         primaryStyle={primaryStyle}
-        logoHeight={globalStyles.logoHeight}
-        logo={globalStyles.logo}
-        logoAlt={globalStyles.logoAlt}
+        logoHeight={globalStyles?.logoHeight}
+        logo={globalStyles?.logo}
+        logoAlt={globalStyles?.logoAlt || 'Logo'}
       />
 
       <div className="container mx-auto px-4 py-6 max-w-4xl">
@@ -66,30 +113,35 @@ const ResultPage: React.FC = () => {
               <div className="max-w-md mx-auto mb-6">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-[#8F7A6A]">Porcentagem de compatibilidade</span>
-                  <span className="text-[#aa6b5d] font-medium">{primaryStyle.percentage}%</span>
+                  <span className="text-[#aa6b5d] font-medium">{stylePercentage}%</span>
                 </div>
-                <Progress 
-                  value={primaryStyle.percentage} 
-                  className="h-2 bg-[#F3E8E6]"
-                  indicatorClassName="bg-[#B89B7A]"
-                />
+                <div className="w-full h-2 bg-[#F3E8E6] rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-[#B89B7A]" 
+                    style={{ width: `${stylePercentage}%` }}
+                  ></div>
+                </div>
               </div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div className="space-y-4">
-                <p className="text-[#432818] leading-relaxed">{description}</p>
+                <p className="text-[#432818] leading-relaxed">{styleData.description}</p>
 
                 <div className="bg-white rounded-lg p-4 shadow-sm border border-[#B89B7A]/10">
                   <h3 className="text-lg font-medium text-[#432818] mb-2">
                     Seus Estilos Complementares
                   </h3>
-                  <SecondaryStylesSection secondaryStyles={secondaryStyles} />
+                  {secondaryStyles && secondaryStyles.length > 0 ? (
+                    <SecondaryStylesSection secondaryStyles={secondaryStyles} />
+                  ) : (
+                    <p className="text-sm text-gray-500">Nenhum estilo complementar identificado</p>
+                  )}
                 </div>
               </div>
               <div>
                 <img
-                  src={image}
+                  src={styleData.image}
                   alt={`Estilo ${category}`}
                   className="w-full h-auto rounded-lg shadow-md hover:scale-105 transition-transform duration-300"
                 />
@@ -97,7 +149,7 @@ const ResultPage: React.FC = () => {
             </div>
             <div className="mt-8">
               <img
-                src={guideImage}
+                src={styleData.guideImage}
                 alt={`Guia de Estilo ${category}`}
                 className="w-full h-auto rounded-lg shadow-md hover:scale-105 transition-transform duration-300"
               />
@@ -183,8 +235,7 @@ const ResultPage: React.FC = () => {
 
             <Button
               onClick={() =>
-                (window.location.href =
-                  'https://pay.hotmart.com/W98977034C?checkoutMode=10&bid=1744967466912')
+                window.open('https://pay.hotmart.com/W98977034C?checkoutMode=10&bid=1744967466912', '_blank')
               }
               className="w-full max-w-xl mx-auto text-white py-6 text-lg rounded-md bg-brand-gold hover:bg-[#A38A69] transition-colors"
             >

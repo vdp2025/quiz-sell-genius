@@ -1,22 +1,48 @@
-import React from 'react';
+import React, { Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { Toaster } from './components/ui/toaster';
+import { LoadingState } from './components/ui/loading-state';
+import { QuizProvider } from './context/QuizContext';
+import Index from './pages/Index';
+import ResultPage from './pages/ResultPage';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import QuizBuilderPage from './pages/QuizBuilderPage';
 
-function App() {
+// Componente para rotas protegidas administrativas
+const ProtectedAdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Aqui você pode verificar se o usuário está autenticado e é um administrador
+  // Por enquanto, apenas renderizamos diretamente para fins de desenvolvimento
+  const isAdmin = true; // Implementar lógica real de verificação
+  
+  if (!isAdmin) {
+    return <Navigate to="/" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+const App: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      <h1 className="text-3xl font-bold text-blue-600 mb-4">Quiz App - Teste</h1>
-      <p className="text-gray-700 mb-6">Esta é uma versão simplificada para teste</p>
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-        <h2 className="text-xl font-semibold mb-4">Verificando se o React está funcionando</h2>
-        <p className="text-gray-600">
-          Se você consegue ver esta mensagem, a configuração básica do React está funcionando corretamente.
-        </p>
-        <button 
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-          onClick={() => alert('O React está funcionando!')}
-        >
-          Clique para testar
-        </button>
-      </div>
+    <div className="app-container">
+      <AuthProvider>
+        <QuizProvider>
+          <Router>
+            <Suspense fallback={<LoadingState />}>
+              <Routes>
+                {/* Rotas públicas */}
+                <Route path="/" element={<Index />} />
+                <Route path="/resultado" element={<ResultPage />} />
+                
+                {/* Rotas administrativas protegidas */}
+                <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
+                <Route path="/admin/quiz-builder" element={<ProtectedAdminRoute><QuizBuilderPage /></ProtectedAdminRoute>} />
+              </Routes>
+            </Suspense>
+            <Toaster />
+          </Router>
+        </QuizProvider>
+      </AuthProvider>
     </div>
   );
 }

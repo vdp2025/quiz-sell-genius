@@ -1,4 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
+import * as React from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useEditorContext } from '@/context/EditorContext';
 import { DeviceType } from '@/types/editor';
 import { cn } from '@/lib/utils';
