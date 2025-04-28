@@ -1,5 +1,63 @@
-# Vue 3 + TypeScript + Vite
+# Quiz Editor
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Este é um projeto de editor de quiz que utiliza Vue.js para a interface do usuário.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## Estrutura do Projeto
+
+```
+quiz-editor/
+├── src/
+│   ├── components/
+│   │   ├── quiz-vue/           # Componentes Vue.js
+│   │   │   ├── QuizQuestion.vue
+│   │   │   ├── QuizIntro.vue
+│   │   │   ├── QuizResult.vue
+│   │   │   └── index.ts
+│   │   ├── shared/            # Componentes compartilhados
+│   │   └── ui/               # Componentes de UI reutilizáveis
+│   ├── assets/              # Recursos estáticos
+│   ├── styles/             # Estilos globais
+│   └── types/             # Definições de tipos TypeScript
+```
+
+## Componentes Principais
+
+### QuizQuestion
+- Componente para exibir perguntas do quiz
+- Suporta opções com texto e imagem
+- Inclui barra de progresso
+- Animações e transições suaves
+
+### QuizIntro
+- Tela inicial do quiz
+- Coleta informações do usuário
+- Animações de entrada
+
+### QuizResult
+- Exibe resultados do quiz
+- Suporta diferentes layouts
+- Inclui opções de compartilhamento
+
+## Tecnologias
+
+- Vue.js 3
+- TypeScript
+- TailwindCSS
+- Vite
+
+## Como Usar
+
+1. Instale as dependências:
+```bash
+npm install
+```
+
+2. Execute o projeto em desenvolvimento:
+```bash
+npm run dev
+```
+
+3. Para build de produção:
+```bash
+npm run build
+```
