@@ -1,13 +1,9 @@
+﻿import { useCallback } from "react";
 
-import { useCallback } from 'react';
-
-export const useQuestionScroll = () => {
+export function useQuestionScroll() {
   const scrollToQuestion = useCallback((questionId: string) => {
-    const questionElement = document.getElementById(`question-${questionId}`);
-    if (questionElement) {
-      questionElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    const el = document.getElementById(`question-${questionId}`);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   }, []);
-
   return { scrollToQuestion };
-};
+}
