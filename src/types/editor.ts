@@ -1,11 +1,19 @@
 // Tipos de dispositivos para visualização responsiva
 export type DeviceType = 'mobile' | 'tablet' | 'desktop' | 'custom';
 
+// Interface para objetos de conteúdo
+export interface ContentObject {
+  text?: string;
+  imageUrl?: string;
+  styleCategory?: string;
+  [key: string]: any;
+}
+
 // Tipos de elementos editáveis
 export type ElementType = {
   id: string;
   type: 'text' | 'image' | 'button' | 'question' | 'option' | 'result' | 'offer';
-  content: string;
+  content: string | ContentObject;
   properties: {
     styles?: {
       backgroundColor?: string;
@@ -67,7 +75,14 @@ export type EditorConfig = {
     containerWidth: string;
     borderRadius: string;
   };
-  blocks: ElementType[];
+  blocks: EditorBlock[];
+  globalStyles?: {
+    primaryColor: string;
+    secondaryColor: string;
+    textColor: string;
+    backgroundColor: string;
+    fontFamily: string;
+  };
 };
 
 // Tipo para ações de edição
@@ -114,30 +129,6 @@ export type MetricsData = {
     count: number;
   }[];
 };
-
-export interface EditorConfig {
-  blocks: EditorBlock[];
-  globalStyles: {
-    primaryColor: string;
-    secondaryColor: string;
-    textColor: string;
-    backgroundColor: string;
-    fontFamily: string;
-  };
-  theme: {
-    primaryColor: string;
-    secondaryColor: string;
-    textColor: string;
-    backgroundColor: string;
-    fontFamily: string;
-    accentColor?: string;
-  };
-  layout?: {
-    spacing: string;
-    containerWidth: string;
-    borderRadius: string;
-  };
-}
 
 export interface EditorBlock {
   id: string;
