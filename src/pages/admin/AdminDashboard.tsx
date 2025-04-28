@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { BarChart3, PenTool, Eye } from 'lucide-react';
+import { BarChart3, PenTool, Eye, Wand2 } from 'lucide-react';
 
 const AdminDashboard = () => {
   return (
@@ -32,7 +31,7 @@ const AdminDashboard = () => {
         
         <div className="mt-10">
           <h2 className="text-lg font-medium text-[#432818] mb-4">Ações Rápidas</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Link 
               to="/admin/quiz-builder" 
               className="bg-white p-6 rounded-lg shadow-sm border border-[#B89B7A]/20 hover:bg-[#FAF9F7] transition-colors flex flex-col"
@@ -41,9 +40,22 @@ const AdminDashboard = () => {
                 <div className="w-10 h-10 rounded-full bg-[#B89B7A]/10 flex items-center justify-center">
                   <PenTool className="w-5 h-5 text-[#B89B7A]" />
                 </div>
-                <h3 className="font-medium text-[#432818] ml-3">Editor do Quiz</h3>
+                <h3 className="font-medium text-[#432818] ml-3">Editor Avançado</h3>
               </div>
-              <p className="text-sm text-[#8F7A6A]">Crie e edite o conteúdo do seu quiz com nosso editor intuitivo</p>
+              <p className="text-sm text-[#8F7A6A]">Editor completo para personalização avançada do quiz</p>
+            </Link>
+            
+            <Link 
+              to="/admin/quiz-builder-simple" 
+              className="bg-white p-6 rounded-lg shadow-sm border border-[#B89B7A]/20 hover:bg-[#FAF9F7] transition-colors flex flex-col"
+            >
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 rounded-full bg-[#B89B7A]/10 flex items-center justify-center">
+                  <Wand2 className="w-5 h-5 text-[#B89B7A]" />
+                </div>
+                <h3 className="font-medium text-[#432818] ml-3">Editor Simplificado</h3>
+              </div>
+              <p className="text-sm text-[#8F7A6A]">Editor estilo Typeform fácil e rápido de usar</p>
             </Link>
             
             <Link 
