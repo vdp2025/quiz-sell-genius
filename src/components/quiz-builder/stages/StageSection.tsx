@@ -1,10 +1,7 @@
-
-import React from 'react';
+﻿import React from 'react';
 import { QuizStage } from '@/types/quizBuilder';
-import { ChevronUp, ChevronDown } from 'lucide-react';
-import { SortableStage } from './SortableStage';
 
-interface StageSectionProps {
+export interface StageSectionProps {
   title: string;
   isExpanded: boolean;
   stages: QuizStage[];
@@ -16,48 +13,33 @@ interface StageSectionProps {
 }
 
 export const StageSection: React.FC<StageSectionProps> = ({
-  title,
-  isExpanded,
-  stages,
-  activeStageId,
-  onToggle,
-  onStageSelect,
-  onStageEdit,
-  onStageDelete
-}) => {
-  return (
-    <div className="mb-4">
-      <div 
-        className="flex items-center justify-between p-2 bg-[#333333] rounded-md cursor-pointer mb-2"
-        onClick={onToggle}
-      >
-        <div className="font-medium text-sm text-gray-200">{title}</div>
-        {isExpanded ? 
-          <ChevronUp className="w-4 h-4 text-gray-400" /> : 
-          <ChevronDown className="w-4 h-4 text-gray-400" />
-        }
-      </div>
-      
-      {isExpanded && (
-        <div className="pl-2">
-          {stages.length > 0 ? (
-            stages.map(stage => (
-              <SortableStage 
-                key={stage.id}
-                stage={stage}
-                isActive={stage.id === activeStageId}
-                onSelect={onStageSelect}
-                onEdit={onStageEdit}
-                onDelete={onStageDelete}
-              />
-            ))
-          ) : (
-            <div className="text-sm text-gray-400 italic p-2">
-              {`Nenhum${title.toLowerCase().startsWith('r') ? ' ' : 'a '}${title.toLowerCase()} adicionad${title.toLowerCase().startsWith('r') ? 'o' : 'a'}`}
+  title, isExpanded, stages, activeStageId,
+  onToggle, onStageSelect, onStageEdit, onStageDelete
+}) => (
+  <div className='mb-4'>
+    <h3 className='cursor-pointer font-semibold' onClick={onToggle}>{title}</h3>
+    {isExpanded && (
+      <ul className='ml-4 mt-2 space-y-1'>
+        {stages.map((stage) => (
+          <li
+            key={stage.id}
+            className='flex items-center justify-between'
+          >
+            <span
+              className='flex-1 cursor-pointer'
+              onClick={() => onStageSelect(stage.id)}
+            >
+              {stage.title || stage.id}
+            </span>
+            <div className='space-x-2'>
+              <button onClick={() => onStageEdit(stage.id)}>✎</button>
+              <button onClick={() => onStageDelete(stage.id)}>🗑️</button>
             </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+);
+
+export default StageSection;

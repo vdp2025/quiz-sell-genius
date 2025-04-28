@@ -1,27 +1,26 @@
-
 import React from 'react';
-import { cn } from '@/lib/utils';
-import { sharedStyles } from '@/styles/sharedStyles';
 
 interface ContentContainerProps {
-  children: React.ReactNode;
   size?: 'sm' | 'md' | 'lg';
-  className?: string;
+  children: React.ReactNode;
 }
 
+const sizeClassMap: Record<'sm' | 'md' | 'lg', string> = {
+  sm: 'max-w-sm',
+  md: 'max-w-md',
+  lg: 'max-w-lg',
+};
+
 export const ContentContainer: React.FC<ContentContainerProps> = ({
-  children,
   size = 'md',
-  className
+  children,
 }) => {
+  const maxWidthClass = sizeClassMap[size] || 'max-w-md';
   return (
-    <div className={cn(
-      'w-full mx-auto px-4 py-6',
-      sharedStyles.containerSizes[size],
-      className
-    )}>
+    <div className={`w-full ${maxWidthClass} mx-auto`}>
       {children}
     </div>
   );
 };
 
+export default ContentContainer;
