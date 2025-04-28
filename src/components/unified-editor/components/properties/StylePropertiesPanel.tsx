@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { ElementType } from '@/types/editor';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
