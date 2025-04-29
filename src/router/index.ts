@@ -3,7 +3,7 @@ import QuizView from '../views/QuizView.vue';
 import ResultsView from '../views/ResultsView.vue';
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
@@ -25,7 +25,7 @@ const router = createRouter({
 });
 
 // Atualizar título da página
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   document.title = to.meta.title ? `${to.meta.title} - Quiz de Estilo` : 'Quiz de Estilo';
   next();
 });

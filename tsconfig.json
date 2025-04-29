@@ -3,6 +3,9 @@
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
+    "types": ["vite/client", "vue", "node"],
+    "types": ["vite/client", "vue", "node"],
+    "types": ["node"],
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
 
@@ -35,5 +38,5 @@
     "src/**/*.vue",
     "vite.config.ts"
   ],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [{ "path": "./tsconfig.node.json", "composite": true }]
 }
