@@ -1,18 +1,23 @@
-
 import React from 'react';
 
 interface SecondaryStylesBlockPreviewProps {
   content: {
     title?: string;
-    style?: any;
+    style?: Record<string, any>;
   };
 }
 
 const SecondaryStylesBlockPreview: React.FC<SecondaryStylesBlockPreviewProps> = ({ content }) => {
+  // Garantir que content seja um objeto válido com propriedades seguras
+  const safeContent = {
+    title: typeof content?.title === 'string' ? content.title : 'Seus Estilos Complementares',
+    style: content?.style && typeof content.style === 'object' ? content.style : {}
+  };
+
   return (
-    <div style={content.style}>
+    <div style={safeContent.style}>
       <h3 className="text-xl font-bold mb-4 text-[#aa6b5d] text-center">
-        {content.title || 'Seus Estilos Complementares'}
+        {safeContent.title}
       </h3>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
