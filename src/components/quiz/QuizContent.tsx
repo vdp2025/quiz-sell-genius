@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { QuizQuestion } from '../QuizQuestion';
 import { UserResponse } from '@/types/quiz';
@@ -6,7 +5,7 @@ import { QuizHeader } from './QuizHeader';
 import { StrategicQuestions } from './StrategicQuestions';
 
 interface QuizContentProps {
-  user: any;
+  user?: any;
   currentQuestionIndex: number;
   totalQuestions: number;
   showingStrategicQuestions: boolean;
@@ -32,9 +31,8 @@ export const QuizContent: React.FC<QuizContentProps> = ({
 }) => {
   // Get user name from localStorage if not provided in props
   const userName = user?.userName || localStorage.getItem('userName') || '';
-
   return (
-    <>
+    <React.Fragment>
       <QuizHeader 
         userName={userName}
         currentQuestionIndex={currentQuestionIndex}
@@ -62,6 +60,6 @@ export const QuizContent: React.FC<QuizContentProps> = ({
           />
         )}
       </div>
-    </>
+    </React.Fragment>
   );
 };

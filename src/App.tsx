@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Suspense } from 'react';
 import { AuthProvider } from './context/AuthContext';
@@ -9,6 +8,7 @@ import Index from './pages/Index';
 import ResultPage from './pages/ResultPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import QuizBuilderPage from './pages/QuizBuilderPage';
+import EditorPage from './pages/EditorPage';
 
 // Componente para rotas protegidas administrativas
 const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
@@ -37,6 +37,9 @@ function App() {
               {/* Rotas administrativas protegidas */}
               <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
               <Route path="/admin/quiz-builder" element={<ProtectedAdminRoute><QuizBuilderPage /></ProtectedAdminRoute>} />
+              
+              {/* Rota do editor de resultado */}
+              <Route path="/admin/resultado-editor" element={<ProtectedAdminRoute><EditorPage /></ProtectedAdminRoute>} />
             </Routes>
           </Suspense>
           <Toaster />

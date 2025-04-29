@@ -1,6 +1,4 @@
-
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
 import { useQuizLogic } from '../hooks/useQuizLogic';
 import { UserResponse } from '@/types/quiz';
 import { toast } from './ui/use-toast';
@@ -11,7 +9,6 @@ import { QuizNavigation } from './navigation/QuizNavigation';
 import { strategicQuestions } from '@/data/strategicQuestions';
 
 const QuizPage: React.FC = () => {
-  const { user } = useAuth();
   // State declarations
   const [showingStrategicQuestions, setShowingStrategicQuestions] = useState(false);
   const [showingTransition, setShowingTransition] = useState(false);
@@ -124,13 +121,8 @@ const QuizPage: React.FC = () => {
     }
   };
 
-  // Save user name to localStorage
-  useEffect(() => {
-    if (user?.userName) {
-      localStorage.setItem('userName', user.userName);
-      console.log('User name saved:', user.userName);
-    }
-  }, [user]);
+  // Get username from localStorage
+  const userName = localStorage.getItem('userName') || 'Usuário';
 
   return (
     <QuizContainer>
@@ -145,7 +137,6 @@ const QuizPage: React.FC = () => {
       {!showingTransition && !showingFinalTransition && (
         <>
           <QuizContent
-            user={user}
             currentQuestionIndex={currentQuestionIndex}
             totalQuestions={totalQuestions}
             showingStrategicQuestions={showingStrategicQuestions}
