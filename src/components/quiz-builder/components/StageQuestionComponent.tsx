@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { QuizComponentData } from '@/types/quizBuilder';
 import { cn } from '@/lib/utils';
@@ -101,23 +100,24 @@ const StageQuestionComponent: React.FC<StageQuestionComponentProps> = ({
         showImages && "mb-4 relative"
       )}>
         {(Array.isArray(data.options) ? data.options : ['Opção 1', 'Opção 2', 'Opção 3', 'Opção 4']).map((option, index) => {
-          const { text, imageUrl } = extractOptionData(option, index);
+          const optionData = extractOptionData(option, index);
           
           return (
             <div
               key={index}
               className={cn(
                 "relative rounded-lg overflow-hidden transition-all duration-200 hover:shadow-md border-2 border-transparent hover:border-[#B89B7A]/60 cursor-pointer",
-                showImages ? "flex flex-col" : "p-4"
+                showImages ? "flex flex-col" : "p-4",
+                optionData.styleCategory ? `option-style-${optionData.styleCategory}` : ''
               )}
             >
               {showImages && (
                 <div className="w-full">
-                  {imageUrl ? (
+                  {optionData.imageUrl ? (
                     <AspectRatio ratio={imageConfig.ratio} className={imageConfig.classes}>
                       <img 
-                        src={imageUrl} 
-                        alt={text}
+                        src={optionData.imageUrl} 
+                        alt={optionData.text}
                         className="w-full h-full object-cover rounded-t-lg"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -140,9 +140,9 @@ const StageQuestionComponent: React.FC<StageQuestionComponentProps> = ({
               {showText && (
                 <div className={cn(
                   "flex-1 p-3 text-[#432818]",
-                  showImages && imageUrl ? "border-t border-[#B89B7A]/10" : ""
+                  showImages && optionData.imageUrl ? "border-t border-[#B89B7A]/10" : ""
                 )}>
-                  {text}
+                  {optionData.text}
                 </div>
               )}
               
