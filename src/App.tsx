@@ -9,6 +9,8 @@ import ResultPage from './pages/ResultPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import QuizBuilderPage from './pages/QuizBuilderPage';
 import QuizBuilderSimplePage from './pages/QuizBuilderSimplePage';
+import EditorPage from './pages/EditorPage';
+import LovableEditorPage from './pages/LovableEditorPage';
 
 // Componente para rotas protegidas administrativas
 const ProtectedAdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -25,27 +27,31 @@ const ProtectedAdminRoute: React.FC<{ children: React.ReactNode }> = ({ children
 
 const App: React.FC = () => {
   return (
-    <div className="app-container">
-      <AuthProvider>
-        <QuizProvider>
-          <Router>
-            <Suspense fallback={<LoadingState />}>
-              <Routes>
-                {/* Rotas públicas */}
-                <Route path="/" element={<Index />} />
-                <Route path="/resultado" element={<ResultPage />} />
-                
-                {/* Rotas administrativas protegidas */}
-                <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
-                <Route path="/admin/quiz-builder" element={<ProtectedAdminRoute><QuizBuilderPage /></ProtectedAdminRoute>} />
-                <Route path="/admin/quiz-builder-simple" element={<ProtectedAdminRoute><QuizBuilderSimplePage /></ProtectedAdminRoute>} />
-              </Routes>
-            </Suspense>
-            <Toaster />
-          </Router>
-        </QuizProvider>
-      </AuthProvider>
-    </div>
+    <AuthProvider>
+      <QuizProvider>
+        <Router>
+          <Suspense fallback={<LoadingState />}>
+            <Routes>
+              {/* Rotas públicas */}
+              <Route path="/" element={<Index />} />
+              <Route path="/resultado" element={<ResultPage />} />
+              
+              {/* Rotas de editor */}
+              <Route path="/editor" element={<EditorPage />} />
+              <Route path="/editor/:style" element={<EditorPage />} />
+              <Route path="/lovable-editor" element={<LovableEditorPage />} />
+              <Route path="/lovable-editor/:style" element={<LovableEditorPage />} />
+              
+              {/* Rotas administrativas protegidas */}
+              <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
+              <Route path="/admin/quiz-builder" element={<ProtectedAdminRoute><QuizBuilderPage /></ProtectedAdminRoute>} />
+              <Route path="/admin/quiz-builder-simple" element={<ProtectedAdminRoute><QuizBuilderSimplePage /></ProtectedAdminRoute>} />
+            </Routes>
+          </Suspense>
+          <Toaster />
+        </Router>
+      </QuizProvider>
+    </AuthProvider>
   );
 }
 

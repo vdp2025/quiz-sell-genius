@@ -1,7 +1,10 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Save, Eye, RefreshCw, Palette } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { Eye, EyeOff, Save, RefreshCw, PaintBrush, Layout } from 'lucide-react';
 import { JsonConfigEditor } from './JsonConfigEditor';
+import { RemoteConfigImporter } from './RemoteConfigImporter';
+import { ConfigExporter } from './ConfigExporter';
 
 interface EditorToolbarProps {
   onSave: () => void;
@@ -25,59 +28,81 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
   onShowTemplates
 }) => {
   return (
-    <div className="border-b border-[#B89B7A]/20 p-4 bg-white flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        {onShowTemplates && (
-          <Button
-            variant="outline"
-            onClick={onShowTemplates}
-            className="text-[#8F7A6A]"
-          >
-            Modelos de Página
-          </Button>
-        )}
+    <div className="bg-white border-b p-4 flex items-center justify-between sticky top-0 z-50">
+      <div className="flex items-center space-x-2">
+        <h1 className="text-lg font-medium text-gray-900 mr-4">Editor de Página de Resultados</h1>
+        
         <Button
           variant="outline"
           size="sm"
           onClick={onPreviewToggle}
+          className="text-sm"
         >
-          <Eye className="w-4 h-4 mr-2" />
-          {isPreviewMode ? 'Modo Edição' : 'Visualizar'}
+          {isPreviewMode ? (
+            <>
+              <EyeOff className="mr-2 h-4 w-4" />
+              Modo Edição
+            </>
+          ) : (
+            <>
+              <Eye className="mr-2 h-4 w-4" />
+              Pré-visualizar
+            </>
+          )}
         </Button>
         
         <Button
           variant="outline"
           size="sm"
           onClick={onEditGlobalStyles}
+          className="text-sm"
         >
-          <Palette className="w-4 h-4 mr-2" />
+          <PaintBrush className="mr-2 h-4 w-4" />
           Estilos Globais
         </Button>
-
-        {resultPageConfig && onUpdateConfig && (
-          <JsonConfigEditor 
-            config={resultPageConfig}
-            onUpdate={onUpdateConfig}
-          />
+        
+        {onShowTemplates && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onShowTemplates}
+            className="text-sm"
+          >
+            <Layout className="mr-2 h-4 w-4" />
+            Templates
+          </Button>
         )}
+      </div>
+      
+      <div className="flex items-center space-x-2">
+        <RemoteConfigImporter onImportConfig={onUpdateConfig} />
+        
+        <ConfigExporter config={resultPageConfig} />
+        
+        <JsonConfigEditor 
+          config={resultPageConfig} 
+          onUpdateConfig={onUpdateConfig} 
+        />
+        
+        <Separator orientation="vertical" className="h-6" />
         
         <Button
           variant="outline"
           size="sm"
           onClick={onReset}
-          className="text-amber-600 hover:text-amber-700"
+          className="text-sm"
         >
-          <RefreshCw className="w-4 h-4 mr-2" />
-          Resetar
+          <RefreshCw className="mr-2 h-4 w-4" />
+          Redefinir
         </Button>
         
         <Button
           variant="default"
           size="sm"
           onClick={onSave}
-          className="bg-[#B89B7A] hover:bg-[#8F7A6A]"
+          className="text-sm bg-[#B89B7A] hover:bg-[#A38A69]"
         >
-          <Save className="w-4 h-4 mr-2" />
+          <Save className="mr-2 h-4 w-4" />
           Salvar
         </Button>
       </div>
