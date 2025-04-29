@@ -48,18 +48,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                 Dashboard
               </Link>
               
-              <Link 
-                to="/admin/quiz-builder" 
-                className={`flex items-center px-3 py-2 text-sm rounded-md ${
-                  location.pathname.includes('/admin/quiz-builder') 
-                    ? 'bg-[#FAF9F7] text-[#432818] font-medium' 
-                    : 'text-[#8F7A6A] hover:bg-[#FAF9F7] hover:text-[#432818]'
-                }`}
-              >
-                <ClipboardList className="w-4 h-4 mr-3" />
-                Editor do Quiz
-              </Link>
-              
               <p className="px-3 pt-5 pb-2 text-xs font-medium text-[#B89B7A] uppercase">
                 Configurações
               </p>
@@ -71,16 +59,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                 <Settings className="w-4 h-4 mr-3" />
                 Configurações
               </Link>
-              
-              <a 
-                href="/" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center px-3 py-2 text-sm text-[#8F7A6A] rounded-md hover:bg-[#FAF9F7] hover:text-[#432818]"
-              >
-                <ClipboardList className="w-4 h-4 mr-3" />
-                Ver Quiz
-              </a>
             </div>
           </div>
         </Sidebar>
