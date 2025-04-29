@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Navigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Sidebar, SidebarProvider } from '../ui/sidebar';
-import { Home, Settings, ClipboardList } from 'lucide-react';
+import { Home, Settings, ClipboardList, LayoutDashboard, FileText } from 'lucide-react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -19,6 +18,12 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   if (!isAuthenticated) {
     return <Navigate to="/" state={{ from: location }} replace />;
   }
+
+  const navigation = [
+    { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Templates', href: '/admin/templates', icon: FileText },
+    { name: 'Configurações', href: '/admin/settings', icon: Settings },
+  ];
 
   return (
     <SidebarProvider>
