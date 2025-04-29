@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuizStore } from '../stores/quiz';
+import { analyticsService } from '../services/analyticsService';
 
 const props = defineProps<{
   primaryStyle: {
@@ -9,6 +10,7 @@ const props = defineProps<{
     title: string;
     description: string;
     imageUrl: string;
+    guideImageUrl: string;
     characteristics: string[];
   };
   secondaryStyles: {
@@ -27,7 +29,14 @@ onMounted(() => {
   if (storedName) {
     userName.value = storedName;
   }
+  
+  // Rastrear visualização do resultado
+  analyticsService.trackOfferView(props.primaryStyle.title);
 });
+
+const handleOfferClick = () => {
+  analyticsService.trackOfferClick(props.primaryStyle.title, 39.00);
+};
 </script>
 
 <template>
@@ -41,7 +50,7 @@ onMounted(() => {
           class="w-32 md:w-40 h-auto mx-auto mb-6"
         />
         <h1 class="font-playfair text-3xl md:text-4xl font-bold text-[#aa6b5d] mb-4">
-          VOCÊ DESCOBRIU SEU ESTILO
+          {{ userName }}, VOCÊ DESCOBRIU SEU ESTILO!
         </h1>
         <p class="text-xl mb-8 text-gray-700">
           Agora é hora de aplicar com clareza — e se vestir de você
@@ -58,20 +67,20 @@ onMounted(() => {
             <p class="text-[#432818] leading-relaxed">
               {{ primaryStyle.description }}
             </p>
-            <div class="bg-white rounded-lg p-4 shadow-sm border border-[#B89B7A]/10">
-              <h3 class="text-lg font-medium text-[#432818] mb-2">
-                Seus Estilos Complementares
+            <div class="bg-[#fff7f3] rounded-lg p-4 shadow-sm">
+              <h3 class="text-lg font-medium text-[#432818] mb-3">
+                Suas Características Principais
               </h3>
-              <div class="space-y-3">
-                <div 
-                  v-for="style in secondaryStyles" 
-                  :key="style.category"
-                  class="flex justify-between items-center"
+              <ul class="space-y-2">
+                <li 
+                  v-for="(characteristic, index) in primaryStyle.characteristics" 
+                  :key="index"
+                  class="flex items-center text-[#432818]"
                 >
-                  <span class="font-medium">{{ style.title }}</span>
-                  <span class="text-sm text-[#B89B7A]">25%</span>
-                </div>
-              </div>
+                  <span class="text-[#B89B7A] mr-2">•</span>
+                  {{ characteristic }}
+                </li>
+              </ul>
             </div>
           </div>
           <div>
@@ -87,8 +96,8 @@ onMounted(() => {
       <!-- Guide Images -->
       <div class="grid md:grid-cols-2 gap-6 mb-12">
         <img
-          src="https://res.cloudinary.com/dqljyf76t/image/upload/v1744920983/Espanhol_Portugu%C3%AAs_8_cgrhuw.webp"
-          alt="Guia Completo de Estilo"
+          :src="primaryStyle.guideImageUrl"
+          :alt="`Guia de Estilo ${primaryStyle.title}`"
           class="w-full rounded-lg shadow-lg hover:scale-105 transition-transform duration-300"
         />
         <img
@@ -98,19 +107,40 @@ onMounted(() => {
         />
       </div>
 
-      <!-- Offer Section -->
+      <!-- Offer Section with tracking -->
       <div class="bg-[#fff7f3] rounded-lg p-6 mb-8">
         <h3 class="text-2xl font-playfair text-[#aa6b5d] mb-4">
-          Guia de Estilo e Imagem + Bônus Exclusivos
+          Guia de Estilo {{ primaryStyle.title }} + Bônus Exclusivos
         </h3>
-        <img
-          src="https://res.cloudinary.com/dqljyf76t/image/upload/v1744911682/C%C3%B3pia_de_MOCKUPS_13_znzbks.webp"
-          alt="Todos os produtos e bônus mockup"
-          class="w-full max-w-2xl mx-auto rounded-lg mb-6"
-        />
+        <div class="grid md:grid-cols-2 gap-6 items-center">
+          <img
+            src="https://res.cloudinary.com/dqljyf76t/image/upload/v1744911682/C%C3%B3pia_de_MOCKUPS_13_znzbks.webp"
+            alt="Todos os produtos e bônus mockup"
+            class="w-full rounded-lg"
+          />
+          <div class="space-y-4">
+            <p class="text-[#432818]">
+              Descubra como valorizar seu estilo {{ primaryStyle.title.toLowerCase() }} com nosso guia completo e personalizado.
+            </p>
+            <ul class="space-y-2">
+              <li class="flex items-center">
+                <span class="text-[#B89B7A] mr-2">✓</span>
+                Guia personalizado para seu estilo
+              </li>
+              <li class="flex items-center">
+                <span class="text-[#B89B7A] mr-2">✓</span>
+                Cartela de cores específica
+              </li>
+              <li class="flex items-center">
+                <span class="text-[#B89B7A] mr-2">✓</span>
+                Combinações ideais para seu tipo
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
 
-      <!-- Pricing -->
+      <!-- Pricing with tracking -->
       <div class="max-w-md mx-auto bg-white rounded-lg p-6 shadow-lg border-2 border-[#aa6b5d] mb-12">
         <div class="flex flex-col md:flex-row gap-6 items-center justify-center mb-6">
           <div class="text-center md:text-right">
@@ -127,13 +157,14 @@ onMounted(() => {
           href="https://pay.hotmart.com/W98977034C?checkoutMode=10&bid=1744967466912"
           class="inline-flex items-center justify-center w-full bg-[#aa6b5d] hover:bg-[#8f574a] text-white py-4 px-6 rounded-md text-lg transition-colors duration-300 font-medium"
           target="_blank"
+          @click="handleOfferClick"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="9" cy="21" r="1"></circle>
             <circle cx="20" cy="21" r="1"></circle>
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
           </svg>
-          Quero meu Guia + Bônus por R$39,00
+          Quero meu Guia {{ primaryStyle.title }} por R$39,00
         </a>
       </div>
 
@@ -149,15 +180,11 @@ onMounted(() => {
           <ul class="space-y-3">
             <li class="flex items-start">
               <span class="text-[#B89B7A] mr-2">•</span>
-              <span>Guia de Estilo e Imagem Personalizado</span>
+              <span>Guia de Estilo {{ primaryStyle.title }} Personalizado</span>
             </li>
             <li class="flex items-start">
               <span class="text-[#B89B7A] mr-2">•</span>
-              <span>Guia de Visagismo Facial</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-[#B89B7A] mr-2">•</span>
-              <span>Cartela de Cores Digital</span>
+              <span>Cartela de Cores Digital para seu estilo</span>
             </li>
             <li class="flex items-start">
               <span class="text-[#B89B7A] mr-2">•</span>
@@ -190,7 +217,7 @@ onMounted(() => {
               Garantia de Satisfação
             </h2>
             <p class="mb-2">
-              Se você não ficar completamente satisfeita com o seu Guia de Estilo Personalizado, 
+              Se você não ficar completamente satisfeita com o seu Guia de Estilo {{ primaryStyle.title }}, 
               basta solicitar o reembolso em até 7 dias após a compra.
             </p>
             <p class="text-gray-600">

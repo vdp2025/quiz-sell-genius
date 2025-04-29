@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useQuizLogic } from '../hooks/useQuizLogic';
@@ -9,6 +8,7 @@ import { QuizContent } from './quiz/QuizContent';
 import { QuizTransitionManager } from './quiz/QuizTransitionManager';
 import { QuizNavigation } from './navigation/QuizNavigation';
 import { strategicQuestions } from '@/data/strategicQuestions';
+import { analyticsService } from '../services/analyticsService';
 
 const QuizPage: React.FC = () => {
   const { user } = useAuth();
@@ -18,6 +18,7 @@ const QuizPage: React.FC = () => {
   const [showingFinalTransition, setShowingFinalTransition] = useState(false);
   const [currentStrategicQuestionIndex, setCurrentStrategicQuestionIndex] = useState(0);
   const [strategicAnswers, setStrategicAnswers] = useState<Record<string, string[]>>({});
+  const [startTime, setStartTime] = useState<number>(Date.now());
 
   // Get quiz logic functions
   const {
@@ -34,93 +35,69 @@ const QuizPage: React.FC = () => {
     submitQuizIfComplete
   } = useQuizLogic();
 
-  // Handle strategic answer
-  const handleStrategicAnswer = (response: UserResponse) => {
-    try {
-      console.log('Strategic Answer Received:', response);
-      setStrategicAnswers(prev => ({
-        ...prev,
-        [response.questionId]: response.selectedOptions
-      }));
+  // Rastrear tempo gasto em cada questão
+  useEffect(() => {
+    if (currentQuestion) {
+      const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+      analyticsService.trackTimeSpent(currentQuestion.id, timeSpent);
+      setStartTime(Date.now());
       
-      saveStrategicAnswer(response.questionId, response.selectedOptions);
-      
-      if (currentStrategicQuestionIndex === strategicQuestions.length - 1) {
-        setTimeout(() => {
-          setShowingFinalTransition(true);
-        }, 500);
-      } else {
-        setTimeout(() => {
-          setCurrentStrategicQuestionIndex(prev => prev + 1);
-        }, 500);
-      }
-    } catch (error) {
-      console.error('Error processing strategic answer:', error);
-      toast({
-        title: "Erro no processamento da resposta",
-        description: "Não foi possível processar sua resposta. Por favor, tente novamente.",
-        variant: "destructive",
-      });
+      // Rastrear visualização da questão
+      analyticsService.trackQuestionView(currentQuestion.id, currentQuestion.text);
     }
-  };
+  }, [currentQuestion]);
 
-  // Handle answer submission
+  // Rastrear abandono do quiz
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (!showingFinalTransition) {
+        analyticsService.trackQuizAbandonment(currentQuestion?.id || 0);
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [currentQuestion, showingFinalTransition]);
+
   const handleAnswerSubmit = (response: UserResponse) => {
-    try {
-      handleAnswer(response.questionId, response.selectedOptions);
-      
-      if (response.selectedOptions.length === currentQuestion.multiSelect) {
-        if (!isLastQuestion) {
-          setTimeout(() => {
-            handleNext();
-          }, 500);
-        } else {
-          console.log('Last question reached, showing transition...');
-          setTimeout(() => {
-            calculateResults();
-            setShowingTransition(true);
-          }, 800);
-        }
-      }
-    } catch (error) {
-      console.error('Error submitting answer:', error);
-      toast({
-        title: "Erro na submissão da resposta",
-        description: "Não foi possível processar sua resposta. Por favor, tente novamente.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  // Handle showing result
-  const handleShowResult = () => {
-    try {
-      const results = submitQuizIfComplete();
-      console.log('Final results being saved:', results);
-      
-      localStorage.setItem('strategicAnswers', JSON.stringify(strategicAnswers));
-      
-      setTimeout(() => {
-        console.log('Navigating to /resultado page...');
-        window.location.href = '/resultado';
-      }, 500);
-    } catch (error) {
-      console.error('Error showing result:', error);
-      toast({
-        title: "Erro ao mostrar resultado",
-        description: "Não foi possível carregar o resultado. Por favor, tente novamente.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  // Handle next click
-  const handleNextClick = () => {
-    if (!isLastQuestion) {
-      handleNext();
+    // Rastrear resposta
+    analyticsService.trackQuestionAnswer(response.questionId, response.answer);
+    
+    if (showingStrategicQuestions) {
+      handleStrategicAnswer(response);
     } else {
-      calculateResults();
+      handleAnswer(response.questionId.toString(), [response.answer]);
+    }
+  };
+
+  const handleNextClick = () => {
+    if (isLastQuestion) {
+      const results = calculateResults();
+      analyticsService.trackQuizComplete(results);
       setShowingTransition(true);
+    } else {
+      handleNext();
+    }
+  };
+
+  const handleStrategicAnswer = (response: UserResponse) => {
+    saveStrategicAnswer(response.questionId.toString(), [response.answer]);
+    setStrategicAnswers(prev => ({
+      ...prev,
+      [response.questionId]: [response.answer]
+    }));
+
+    if (currentStrategicQuestionIndex < strategicQuestions.length - 1) {
+      setCurrentStrategicQuestionIndex(prev => prev + 1);
+    } else {
+      setShowingFinalTransition(true);
+    }
+  };
+
+  const handleShowResult = () => {
+    const results = submitQuizIfComplete();
+    if (results) {
+      analyticsService.trackQuizComplete(results);
     }
   };
 

@@ -1,21 +1,134 @@
+// Tipos de dispositivos para visualização responsiva
+export type DeviceType = 'mobile' | 'tablet' | 'desktop' | 'custom';
 
-export interface EditorConfig {
-  blocks: EditorBlock[];
-  globalStyles: {
-    primaryColor: string;
-    secondaryColor: string;
-    textColor: string;
-    backgroundColor: string;
-    fontFamily: string;
+// Interface para objetos de conteúdo
+export interface ContentObject {
+  text?: string;
+  imageUrl?: string;
+  styleCategory?: string;
+  [key: string]: any;
+}
+
+// Tipos de elementos editáveis
+export type ElementType = {
+  id: string;
+  type: 'text' | 'image' | 'button' | 'question' | 'option' | 'result' | 'offer';
+  content: string | ContentObject;
+  properties: {
+    styles?: {
+      backgroundColor?: string;
+      color?: string;
+      fontSize?: string;
+      fontWeight?: string;
+      borderRadius?: string;
+      borderColor?: string;
+      padding?: string;
+      margin?: string;
+      width?: string;
+      height?: string;
+      shadow?: string;
+    };
+    attributes?: {
+      src?: string;
+      alt?: string;
+      href?: string;
+      target?: string;
+      rel?: string;
+      placeholder?: string;
+      title?: string;
+    };
+    data?: {
+      questionId?: string;
+      optionId?: string;
+      resultId?: string;
+      offerId?: string;
+      action?: string;
+      redirectUrl?: string;
+    };
   };
+  children?: ElementType[];
+  parent?: string;
+  position?: {
+    x: number;
+    y: number;
+  };
+  constraints?: {
+    editable: boolean;
+    movable: boolean;
+    resizable: boolean;
+    deletable: boolean;
+  };
+};
+
+// Configuração do editor
+export type EditorConfig = {
   theme: {
     primaryColor: string;
     secondaryColor: string;
+    accentColor: string;
     textColor: string;
     backgroundColor: string;
     fontFamily: string;
   };
-}
+  layout: {
+    spacing: string;
+    containerWidth: string;
+    borderRadius: string;
+  };
+  blocks: EditorBlock[];
+  globalStyles?: {
+    primaryColor: string;
+    secondaryColor: string;
+    textColor: string;
+    backgroundColor: string;
+    fontFamily: string;
+  };
+};
+
+// Tipo para ações de edição
+export type EditorAction = {
+  type: 'add' | 'update' | 'delete' | 'move' | 'clearAll';
+  elementId?: string;
+  element?: Partial<ElementType>;
+  position?: number;
+};
+
+// Tipo para histórico de edições
+export type EditorHistory = {
+  past: EditorAction[];
+  future: EditorAction[];
+};
+
+// Tipo para métricas
+export type MetricEvent = {
+  id: string;
+  sessionId: string;
+  eventType: 'view' | 'click' | 'submit' | 'abandon';
+  targetId?: string;
+  targetType?: string;
+  questionNumber?: number;
+  timestamp: number;
+  metadata?: Record<string, any>;
+};
+
+// Tipo para dados de métricas agrupados
+export type MetricsData = {
+  funnelData: {
+    stage: string;
+    count: number;
+    percentage: number;
+  }[];
+  abandonmentData: {
+    questionNumber: number;
+    count: number;
+    percentage: number;
+  }[];
+  clicksData: {
+    targetId: string;
+    targetType: string;
+    count: number;
+  }[];
+};
 
 export interface EditorBlock {
   id: string;
