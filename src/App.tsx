@@ -1,36 +1,58 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Suspense } from 'react';
 import { AuthProvider } from './context/AuthContext';
-import { ProtectedAdminRoute } from './components/admin/ProtectedAdminRoute';
-import AdminLayout from './components/admin/AdminLayout';
+import { Toaster } from './components/ui/toaster';
+import { LoadingState } from './components/ui/loading-state';
+import { QuizProvider } from './context/QuizContext';
+import Index from './pages/Index';
+import ResultPage from './pages/ResultPage';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import QuizBuilderPage from './pages/QuizBuilderPage';
+import EditorPage from './pages/EditorPage';
+import AdminLayout from './pages/admin/AdminLayout';
 import DashboardPage from './pages/admin/DashboardPage';
 import TemplatesPage from './pages/admin/TemplatesPage';
 import SettingsPage from './pages/admin/SettingsPage';
-import EditorPage from './pages/EditorPage';
+
+// Componente para rotas protegidas administrativas
+const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
+  // Aqui você pode verificar se o usuário está autenticado e é um administrador
+  // Por enquanto, apenas renderizamos diretamente para fins de desenvolvimento
+  const isAdmin = true; // Implementar lógica real de verificação
+  
+  if (!isAdmin) {
+    return <Navigate to="/" replace />;
+  }
+  
+  return <>{children}</>;
+};
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          {/* Rota padrão */}
-          <Route path="/" element={<Navigate to="/admin" replace />} />
-
-          {/* Rotas administrativas protegidas */}
-          <Route path="/admin" element={<ProtectedAdminRoute><AdminLayout /></ProtectedAdminRoute>}>
-            <Route index element={<Navigate to="/admin/dashboard" replace />} />
-            <Route path="/admin/dashboard" element={<DashboardPage />} />
-            <Route path="/admin/templates" element={<TemplatesPage />} />
-            <Route path="/admin/settings" element={<SettingsPage />} />
-          </Route>
-
-          {/* Rota do editor */}
-          <Route path="/editor/:id" element={<EditorPage />} />
-
-          {/* Rota 404 */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
+      <QuizProvider>
+        <Router>
+          <Suspense fallback={<LoadingState />}>
+            <Routes>
+              {/* Rotas públicas */}
+              <Route path="/" element={<Index />} />
+              <Route path="/resultado" element={<ResultPage />} />
+              
+              {/* Rotas administrativas protegidas */}
+              <Route path="/admin" element={<ProtectedAdminRoute><AdminLayout /></ProtectedAdminRoute>}>
+                <Route index element={<Navigate to="/admin/dashboard" replace />} />
+                <Route path="/admin/dashboard" element={<DashboardPage />} />
+                <Route path="/admin/templates" element={<TemplatesPage />} />
+                <Route path="/admin/settings" element={<SettingsPage />} />
+              </Route>
+              
+              {/* Rota do editor de resultado */}
+              <Route path="/admin/resultado-editor" element={<ProtectedAdminRoute><EditorPage /></ProtectedAdminRoute>} />
+            </Routes>
+          </Suspense>
+          <Toaster />
+        </Router>
+      </QuizProvider>
     </AuthProvider>
   );
 }
