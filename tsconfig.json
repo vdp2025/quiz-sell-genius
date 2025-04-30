@@ -35,5 +35,5 @@
     "src/**/*.vue",
     "vite.config.ts"
   ],
-  "references": [{ "path": "./tsconfig.node.json", "noEmit": false }]
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
