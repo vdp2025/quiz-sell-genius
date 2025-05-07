@@ -1,5 +1,5 @@
 {
-  "name": "quiz-editor",
+  "name": "vite_react_shadcn_ts",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -45,6 +45,7 @@
     "@radix-ui/react-tooltip": "^1.1.4",
     "@supabase/supabase-js": "^2.49.4",
     "@tanstack/react-query": "^5.56.2",
+    "@types/file-saver": "^2.0.7",
     "@types/react-beautiful-dnd": "^13.1.7",
     "@types/uuid": "^10.0.0",
     "class-variance-authority": "^0.7.1",
@@ -52,6 +53,7 @@
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
+    "file-saver": "^2.0.5",
     "framer-motion": "^12.8.0",
     "input-otp": "^1.2.4",
     "lodash": "^4.17.21",
@@ -77,11 +79,10 @@
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@tailwindcss/typography": "^0.5.15",
-    "@types/node": "^22.15.3",
+    "@types/node": "^22.5.5",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
-    "@vitejs/plugin-vue": "^5.2.3",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
@@ -92,7 +93,6 @@
     "tailwindcss": "^3.4.11",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
-    "vite": "^5.4.1",
-    "vite-plugin-compression": "^0.5.1"
+    "vite": "^5.4.1"
   }
 }

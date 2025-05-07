@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { Navigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Sidebar, SidebarProvider } from '../ui/sidebar';
-import { Home, Settings, ClipboardList, LayoutDashboard, FileText } from 'lucide-react';
+import { Home, Settings, ClipboardList } from 'lucide-react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -18,12 +19,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   if (!isAuthenticated) {
     return <Navigate to="/" state={{ from: location }} replace />;
   }
-
-  const navigation = [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-    { name: 'Templates', href: '/admin/templates', icon: FileText },
-    { name: 'Configurações', href: '/admin/settings', icon: Settings },
-  ];
 
   return (
     <SidebarProvider>
@@ -48,6 +43,18 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                 Dashboard
               </Link>
               
+              <Link 
+                to="/admin/quiz-builder" 
+                className={`flex items-center px-3 py-2 text-sm rounded-md ${
+                  location.pathname.includes('/admin/quiz-builder') 
+                    ? 'bg-[#FAF9F7] text-[#432818] font-medium' 
+                    : 'text-[#8F7A6A] hover:bg-[#FAF9F7] hover:text-[#432818]'
+                }`}
+              >
+                <ClipboardList className="w-4 h-4 mr-3" />
+                Editor do Quiz
+              </Link>
+              
               <p className="px-3 pt-5 pb-2 text-xs font-medium text-[#B89B7A] uppercase">
                 Configurações
               </p>
@@ -59,6 +66,16 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                 <Settings className="w-4 h-4 mr-3" />
                 Configurações
               </Link>
+              
+              <a 
+                href="/" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center px-3 py-2 text-sm text-[#8F7A6A] rounded-md hover:bg-[#FAF9F7] hover:text-[#432818]"
+              >
+                <ClipboardList className="w-4 h-4 mr-3" />
+                Ver Quiz
+              </a>
             </div>
           </div>
         </Sidebar>
